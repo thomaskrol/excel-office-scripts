@@ -1,1 +1,78 @@
-{"version":"0.3.0","body":"function main(\n  workbook: ExcelScript.Workbook,\n  tableName: string,\n  keyColumnName: string,\n  keyValue: string,\n  updatesJson: string\n) {\n  // Parse updates from JSON string\n  let updates: { [column: string]: string | number | boolean };\n  try {\n    updates = JSON.parse(updatesJson);\n  } catch (e) {\n    return {\n      success: false,\n      message: \"Invalid JSON in updatesJson parameter\"\n    };\n  }\n\n  // Get the table\n  const table = workbook.getTable(tableName);\n  if (!table) {\n    return {\n      success: false,\n      message: `Table \"${tableName}\" not found`\n    };\n  }\n  table.clearFilters();\n\n  const keyCol = table.getColumnByName(keyColumnName);\n  if (!keyCol) {\n    return {\n      success: false,\n      message: `Column \"${keyColumnName}\" not found`\n    };\n  }\n\n  // Get column range\n  const colRange = keyCol.getRangeBetweenHeaderAndTotal();\n  const data = colRange.getValues();\n\n  // Get all data and find matching row\n  let targetRowIndex = -1;\n  for (let i = 0; i < data.length; i++) {\n    if (String(data[i]) === String(keyValue)) {\n      targetRowIndex = i;\n      break;\n    }\n  }\n  console.log(`targetRowIndex: ${targetRowIndex}`);\n\n  if (targetRowIndex === -1) {\n    return {\n      success: false,\n      message: `No row found with ${keyColumnName} = \"${keyValue}\"`\n    };\n  }\n\n  let rowCell: ExcelScript.Range\n  // Update each specified column\n  for (const [column, value] of Object.entries(updates)) {\n    const colIndex = table.getColumnByName(column).getIndex();\n    if (colIndex === -1) {\n      return {\n        success: false,\n        message: `Column \"${keyColumnName}\" not found`\n      };\n    }\n\n    rowCell = table.getColumnByName(column).getRangeBetweenHeaderAndTotal().getCell(targetRowIndex, 0);\n    rowCell.setValue(value);\n  }\n  \n  return {\n    success: true,\n    message: \"Row updated successfully\",\n    row: targetRowIndex + table.getHeaderRowRange().getRowIndex() + 2 // +1 for header, +1 for Excel 1-indexing\n  };\n}","description":"","noCodeMetadata":"","parameterInfo":"{\"version\":1,\"originalParameterOrder\":[{\"name\":\"tableName\",\"index\":0},{\"name\":\"keyColumnName\",\"index\":1},{\"name\":\"keyValue\",\"index\":2},{\"name\":\"updatesJson\",\"index\":3}],\"parameterSchema\":{\"type\":\"object\",\"required\":[\"tableName\",\"keyColumnName\",\"keyValue\",\"updatesJson\"],\"properties\":{\"tableName\":{\"type\":\"string\"},\"keyColumnName\":{\"type\":\"string\"},\"keyValue\":{\"type\":\"string\"},\"updatesJson\":{\"type\":\"string\"}}},\"returnSchema\":{\"type\":\"object\",\"properties\":{\"result\":{}}},\"signature\":{\"comment\":\"\",\"parameters\":[{\"name\":\"workbook\",\"comment\":\"\"},{\"name\":\"tableName\",\"comment\":\"\"},{\"name\":\"keyColumnName\",\"comment\":\"\"},{\"name\":\"keyValue\",\"comment\":\"\"},{\"name\":\"updatesJson\",\"comment\":\"\"}]}}","apiInfo":"{\"variant\":\"synchronous\",\"variantVersion\":2}"}
+function main(
+  workbook: ExcelScript.Workbook,
+  tableName: string,
+  keyColumnName: string,
+  keyValue: string,
+  updatesJson: string
+) {
+  // Parse updates from JSON string
+  let updates: { [column: string]: string | number | boolean };
+  try {
+    updates = JSON.parse(updatesJson);
+  } catch (e) {
+    return {
+      success: false,
+      message: "Invalid JSON in updatesJson parameter"
+    };
+  }
+
+  const table = workbook.getTable(tableName);
+  if (!table) {
+    return {
+      success: false,
+      message: `Table "${tableName}" not found`
+    };
+  }
+
+  table.clearFilters();
+  const keyCol = table.getColumnByName(keyColumnName);
+  if (!keyCol) {
+    return {
+      success: false,
+      message: `Column "${keyColumnName}" not found`
+    };
+  }
+
+  // Get column range
+  const colRange = keyCol.getRangeBetweenHeaderAndTotal();
+  const data = colRange.getValues();
+
+  // Get all data and find matching row
+  let targetRowIndex = -1;
+  for (let i = 0; i < data.length; i++) {
+    if (String(data[i]) === String(keyValue)) {
+      targetRowIndex = i
+      break;
+    }
+  }
+  console.log(`targetRowIndex: ${targetRowIndex}`);
+  if (targetRowIndex === -1) {
+    return {
+      success: false,
+      message: `No row found with ${keyColumnName} = "${keyValue}"`
+    }
+  }
+
+  // Update each specified column
+  let rowCell: ExcelScript.Range
+  for (const [column, value] of Object.entries(updates)) {
+    const colIndex = table.getColumnByName(column).getIndex();
+
+    if (colIndex === -1) {
+      return {
+        success: false,
+        message: `Column "${keyColumnName}" not found`
+      }
+    }
+
+    rowCell = table.getColumnByName(column).getRangeBetweenHeaderAndTotal().getCell(targetRowIndex, 0);
+    rowCell.setValue(value);
+  }
+
+  return {
+    success: true,
+    message: "Row updated successfully",
+    // +1 for header, +1 for Excel 1-indexing
+    row: targetRowIndex + table.getHeaderRowRange().getRowIndex() + 2
+  };
+}

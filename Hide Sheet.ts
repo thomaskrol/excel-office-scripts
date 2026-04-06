@@ -1,1 +1,12 @@
-{"version":"0.3.0","body":"function main(workbook: ExcelScript.Workbook, sheetName: string) {\r\n\tconst sheet = workbook.getWorksheet(sheetName);\r\n\tif (!sheet) {\r\n\t\tthrow new Error(`Worksheet \"${sheetName}\" not found.`);\r\n\t}\r\n\r\n\t// Set sheet visibility to hidden\r\n\tsheet.setVisibility(ExcelScript.SheetVisibility.hidden);\r\n}","description":"","noCodeMetadata":"","parameterInfo":"{\"version\":1,\"originalParameterOrder\":[{\"name\":\"sheetName\",\"index\":0}],\"parameterSchema\":{\"type\":\"object\",\"required\":[\"sheetName\"],\"properties\":{\"sheetName\":{\"type\":\"string\"}}},\"returnSchema\":{\"type\":\"object\",\"properties\":{}},\"signature\":{\"comment\":\"\",\"parameters\":[{\"name\":\"workbook\",\"comment\":\"\"},{\"name\":\"sheetName\",\"comment\":\"\"}]}}","apiInfo":"{\"variant\":\"synchronous\",\"variantVersion\":2}"}
+function main(
+  workbook: ExcelScript.Workbook,
+  sheetName: string
+) {
+  const sheet = workbook.getWorksheet(sheetName);
+  if (!sheet) {
+    throw new Error(`Worksheet "${sheetName}" not found.`);
+  }
+
+  // Set sheet visibility to hidden
+  sheet.setVisibility(ExcelScript.SheetVisibility.hidden);
+}

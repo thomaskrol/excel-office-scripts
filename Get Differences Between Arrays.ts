@@ -1,1 +1,40 @@
-{"version":"0.3.0","body":"function main(\n  workbook: ExcelScript.Workbook,\n  initialArray: Array<object>,\n  newArray: Array<object>,\n  idColName: string\n): {}[] {\n\n  const output: { [key: string]: string }[] = [];\n\n  for (const newObj of newArray) {\n    const id: string = newObj[idColName];\n\n    const initialObj = initialArray.find(o => o[idColName] === id);\n\n    // No match found: object is brand new so include in full\n    if (!initialObj) {\n      output.push({ ...newObj });\n      continue;\n    }\n\n    // Compare properties and collect only those that have changed\n    const diff: { [key: string]: string } = {};\n\n    for (const key of Object.keys(newObj)) {\n      if (key === idColName) continue; // id is always added if there are changes\n\n      const newVal: string = newObj[key];\n      const oldVal: string = initialObj[key];\n\n      if (newVal !== oldVal) {\n        diff[key] = newVal;\n      }\n    }\n\n    if (Object.keys(diff).length > 0) {\n      diff[idColName] = id;\n      output.push({ ...diff });\n    }\n  }\n\n  return output;\n}","description":"","noCodeMetadata":"","parameterInfo":"{\"version\":1,\"originalParameterOrder\":[{\"name\":\"initialArray\",\"index\":0},{\"name\":\"newArray\",\"index\":1},{\"name\":\"idColName\",\"index\":2}],\"parameterSchema\":{\"type\":\"object\",\"required\":[\"initialArray\",\"newArray\",\"idColName\"],\"properties\":{\"initialArray\":{\"type\":\"array\",\"items\":{\"type\":\"object\"}},\"newArray\":{\"type\":\"array\",\"items\":{\"type\":\"object\"}},\"idColName\":{\"type\":\"string\"}}},\"returnSchema\":{\"type\":\"object\",\"properties\":{}},\"signature\":{\"comment\":\"\",\"parameters\":[{\"name\":\"workbook\",\"comment\":\"\"},{\"name\":\"initialArray\",\"comment\":\"\"},{\"name\":\"newArray\",\"comment\":\"\"},{\"name\":\"idColName\",\"comment\":\"\"}]}}","apiInfo":"{\"variant\":\"synchronous\",\"variantVersion\":2}"}
+function main(
+  workbook: ExcelScript.Workbook,
+  initialArray: Array<object>,
+  newArray: Array<object>,
+  idColName: string
+): {}[] {
+  const output: { [key: string]: string }[] = [];
+
+  for (const newObj of newArray) {
+    const id: string = newObj[idColName];
+    const initialObj = initialArray.find(o => o[idColName] === id);
+
+    // No match found: object is brand new so include in full
+    if (!initialObj) {
+      output.push({ ...newObj });
+      continue;
+    }
+
+    // Compare properties and collect only those that have changed
+    const diff: { [key: string]: string } = {};
+
+    for (const key of Object.keys(newObj)) {
+      if (key === idColName) continue;
+
+      // id is always added if there are changes
+      const newVal: string = newObj[key];
+      const oldVal: string = initialObj[key];
+      if (newVal !== oldVal) {
+        diff[key] = newVal
+      }
+    }
+
+    if (Object.keys(diff).length > 0) {
+      diff[idColName] = id
+      output.push({ ...diff });
+    }
+  }
+
+  return output;
+}

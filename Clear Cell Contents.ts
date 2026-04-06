@@ -1,1 +1,23 @@
-{"version":"0.3.0","body":"function main(workbook: ExcelScript.Workbook, tableName: string, columnName: string, rowIndex: number) {\n  const table = workbook.getTable(tableName);\n  if (!table) {\n    throw new Error(`Table \"${tableName}\" not found.`);\n  }\n\n  // Get all headers and find the column index\n  const headers = table.getHeaderRowRange().getValues()[0];\n  const columnIndex = headers.indexOf(columnName);\n\n  if (columnIndex === -1) {\n    throw new Error(`Column \"${columnName}\" not found.`);\n  }\n\n  // Get the row (excluding the header row)\n  const rowRange = table.getRangeBetweenHeaderAndTotal();\n  const targetCell = rowRange.getCell(rowIndex, columnIndex);\n\n  targetCell.clear(ExcelScript.ClearApplyTo.contents);\n}\n","description":"","noCodeMetadata":"","parameterInfo":"{\"version\":1,\"originalParameterOrder\":[{\"name\":\"tableName\",\"index\":0},{\"name\":\"columnName\",\"index\":1},{\"name\":\"rowIndex\",\"index\":2}],\"parameterSchema\":{\"type\":\"object\",\"required\":[\"tableName\",\"columnName\",\"rowIndex\"],\"properties\":{\"tableName\":{\"type\":\"string\"},\"columnName\":{\"type\":\"string\"},\"rowIndex\":{\"type\":\"number\"}}},\"returnSchema\":{\"type\":\"object\",\"properties\":{}},\"signature\":{\"comment\":\"\",\"parameters\":[{\"name\":\"workbook\",\"comment\":\"\"},{\"name\":\"tableName\",\"comment\":\"\"},{\"name\":\"columnName\",\"comment\":\"\"},{\"name\":\"rowIndex\",\"comment\":\"\"}]}}","apiInfo":"{\"variant\":\"synchronous\",\"variantVersion\":2}"}
+function main(
+  workbook: ExcelScript.Workbook,
+  tableName: string,
+  columnName: string,
+  rowIndex: number
+) {
+  const table = workbook.getTable(tableName);
+  if (!table) {
+    throw new Error(`Table "${tableName}" not found.`);
+  }
+
+  // Get all headers and find the column index
+  const headers = table.getHeaderRowRange().getValues()[0];
+  const columnIndex = headers.indexOf(columnName);
+  if (columnIndex === -1) {
+    throw new Error(`Column "${columnName}" not found.`);
+  }
+
+  // Get the row (excluding the header row);
+  const rowRange = table.getRangeBetweenHeaderAndTotal();
+  const targetCell = rowRange.getCell(rowIndex, columnIndex);
+  targetCell.clear(ExcelScript.ClearApplyTo.contents);
+}

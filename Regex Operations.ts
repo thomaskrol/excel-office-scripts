@@ -1,1 +1,53 @@
-{"version":"0.3.0","body":"/**\n * Performs regex operations on a string.\n * \n * @param operation Operation type: \"all matches\" returns matching strings, \"test match\" returns boolean, \"replace\" substitutes matches with replaceString, \"groups\" returns captured groups\n * @param searchString String to test against regex pattern\n * @param regexPattern Regex pattern for matching\n * @param regexFlags Regex flags (g, i, m, s, u, y, d)\n * @param replaceString Replacement string (required for \"replace\" operation)\n */\nfunction main(\n  workbook: ExcelScript.Workbook,\n  operation: \"all matches\" | \"test match\" | \"replace\" | \"groups\" = \"all matches\",\n  searchString: string,\n  regexPattern: string,\n  regexFlags?: string,\n  replaceString?: string\n): string | Array<string> | boolean {\n  // validate regexFlags\n  if (regexFlags) {\n    const validFlags = ['g', 'i', 'm', 's', 'u', 'y', 'd'];\n    const invalidFlags = regexFlags.split(\"\").filter(f => !validFlags.includes(f));\n    if (invalidFlags.length > 0) {\n      throw new Error(`Invalid regex flag(s): ${invalidFlags.join(', ')}. Valid flags are: ${validFlags.join(', ')}`);\n    }\n  }\n  \n  const regex = new RegExp(regexPattern, regexFlags || undefined);\n\n  switch (operation.toLowerCase()) {\n    case \"all matches\": {\n      const matches: Array<string> = searchString.match(regex);\n      return matches || [];\n    }\n    case \"test match\": {\n      return regex.test(searchString);\n    }\n    case \"replace\": {\n      return searchString.replace(regex, replaceString || \"\");\n    }\n    case \"groups\": {\n      const match: Array<string> = regex.exec(searchString);\n      if (!match) return [];\n      return match.slice(1); // Return all captured groups except the full match at index 0\n    }\n    default: {\n      throw new Error(`Unknown operation: ${operation}`);\n    }\n  }\n}","description":"","noCodeMetadata":"","parameterInfo":"{\"version\":1,\"originalParameterOrder\":[{\"name\":\"operation\",\"index\":0},{\"name\":\"searchString\",\"index\":1},{\"name\":\"regexPattern\",\"index\":2},{\"name\":\"regexFlags\",\"index\":3},{\"name\":\"replaceString\",\"index\":4}],\"parameterSchema\":{\"type\":\"object\",\"required\":[\"operation\",\"searchString\",\"regexPattern\"],\"properties\":{\"operation\":{\"type\":\"string\",\"enum\":[\"all matches\",\"test match\",\"replace\",\"groups\"],\"default\":\"all matches\"},\"searchString\":{\"type\":\"string\"},\"regexPattern\":{\"type\":\"string\"},\"regexFlags\":{\"type\":\"string\"},\"replaceString\":{\"type\":\"string\"}}},\"returnSchema\":{\"type\":\"object\",\"properties\":{\"result\":{}}},\"signature\":{\"comment\":\"Performs regex operations on a string.\",\"parameters\":[{\"name\":\"workbook\",\"comment\":\"\"},{\"name\":\"operation\",\"comment\":\"Operation type: \\\"all matches\\\" returns matching strings, \\\"test match\\\" returns boolean, \\\"replace\\\" substitutes matches with replaceString, \\\"groups\\\" returns captured groups\"},{\"name\":\"searchString\",\"comment\":\"String to test against regex pattern\"},{\"name\":\"regexPattern\",\"comment\":\"Regex pattern for matching\"},{\"name\":\"regexFlags\",\"comment\":\"Regex flags (g, i, m, s, u, y, d)\"},{\"name\":\"replaceString\",\"comment\":\"Replacement string (required for \\\"replace\\\" operation)\"}]}}","apiInfo":"{\"variant\":\"synchronous\",\"variantVersion\":2}"}
+/**
+  * Performs regex operations on a string.
+  * 
+  * @param operation Operation type: "all matches" returns matching strings, "test match" returns boolean, "replace" substitutes matches with replaceString, "groups" returns captured groups
+  * @param searchString String to test against regex pattern
+  * @param regexPattern Regex pattern for matching
+  * @param regexFlags Regex flags (g, i, m, s, u, y, d)
+  * @param replaceString Replacement string (required for "replace" operation)
+  */
+function main(
+  workbook: ExcelScript.Workbook,
+  operation: "all matches" | "test match" | "replace" | "groups" = "all matches",
+  searchString: string,
+  regexPattern: string,
+  regexFlags?: string,
+  replaceString?: string
+): string | Array<string> | boolean {
+  // validate regexFlags
+  if (regexFlags) {
+    const validFlags = ['g', 'i', 'm', 's', 'u', 'y', 'd'];
+    const invalidFlags = regexFlags.split("").filter(f => !validFlags.includes(f));
+    if (invalidFlags.length > 0) {
+      throw new Error(`Invalid regex flag(s): ${invalidFlags.join(', ')}. Valid flags are: ${validFlags.join(', ')}`);
+    }
+  }
+
+  const regex = new RegExp(regexPattern, regexFlags || undefined);
+  switch (operation.toLowerCase()) {
+    case "all matches": {
+      const matches: Array<string> = searchString.match(regex);
+      return matches || [];
+    }
+
+    case "test match": {
+      return regex.test(searchString);
+    }
+
+    case "replace": {
+      return searchString.replace(regex, replaceString || "");
+    }
+
+    case "groups": {
+      const match: Array<string> = regex.exec(searchString);
+      if (!match) return [];
+      return match.slice(1);
+      // Return all captured groups except the full match at index 0
+    }
+
+    default: {
+      throw new Error(`Unknown operation: ${operation}`);
+    }
+  }
+}

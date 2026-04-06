@@ -1,1 +1,69 @@
-{"version":"0.3.0","body":"/**\n * Creates a table from JSON data on a specified worksheet.\n * \n * @param sheetName Name of the worksheet where the table will be created\n * @param startCell Top-left cell address for the table (e.g., \"A1\")\n * @param inputJson JSON string containing array of objects with consistent keys\n * @param tableName Optional name for the created table\n */\nfunction main(\n  workbook: ExcelScript.Workbook,\n  sheetName: string,\n  startCell: string,\n  inputJson: string,\n  tableName?: string\n) {\n  let returnMsg: string;\n\n  const sheet = workbook.getWorksheet(sheetName);\n  if (!sheet) throw new Error(`Worksheet \"${sheetName}\" not found.`);\n\n  let inputData: Record<string, string | number | boolean>[];\n  try {\n    inputData = JSON.parse(inputJson);\n  } catch (e) {\n    throw new Error(`Failed to parse input JSON: ${e.message}`);\n  }\n\n  // nothing to write\n  if (!Array.isArray(inputData) || inputData.length === 0) return {\n    \"message\": \"Input JSON has no data.\"\n  }\n\n  // calculate range based on data dimensions\n  const numCols = Object.keys(inputData[0]).length;\n\n  // convert startCell to a full range\n  const startRange = sheet.getRange(startCell);\n  const endRange = startRange.getOffsetRange(0, numCols - 1);\n  const tableRange = `${startCell}:${endRange.getAddress().split('!')[1]}`;\n\n  // create table with headers only\n  const table = sheet.addTable(tableRange, true);\n\n  if (tableName) {\n    try {\n      table.setName(tableName);\n    } catch (e) {\n      const allTables = workbook.getTables().map(tbl => tbl.getName());\n      if (allTables.includes(tableName)) {\n        returnMsg = `A table already exists with the name \"${tableName}\".`;\n      } else {\n        throw new Error(e);\n      }\n    }\n  }\n\n  // set column headers\n  const inputKeys = Object.keys(inputData[0]).map(k => k.trim());\n  const columns = table.getColumns();\n  inputKeys.forEach((key, index) => {\n    columns[index].setName(key);\n  });\n\n  // add data rows\n  const rowsData = inputData.map(obj => inputKeys.map(key => obj[key]));\n  table.addRows(-1, rowsData);\n\n  return {\n    \"message\": \"Successfully created table.\" + ((returnMsg) ? \"\\n\" + returnMsg : \"\"),\n    \"createdTableName\": table.getName()\n  }\n}","description":"","noCodeMetadata":"","parameterInfo":"{\"version\":1,\"originalParameterOrder\":[{\"name\":\"sheetName\",\"index\":0},{\"name\":\"startCell\",\"index\":1},{\"name\":\"inputJson\",\"index\":2},{\"name\":\"tableName\",\"index\":3}],\"parameterSchema\":{\"type\":\"object\",\"required\":[\"sheetName\",\"startCell\",\"inputJson\"],\"properties\":{\"sheetName\":{\"type\":\"string\"},\"startCell\":{\"type\":\"string\"},\"inputJson\":{\"type\":\"string\"},\"tableName\":{\"type\":\"string\"}}},\"returnSchema\":{\"type\":\"object\",\"properties\":{\"result\":{}}},\"signature\":{\"comment\":\"Creates a table from JSON data on a specified worksheet.\",\"parameters\":[{\"name\":\"workbook\",\"comment\":\"\"},{\"name\":\"sheetName\",\"comment\":\"Name of the worksheet where the table will be created\"},{\"name\":\"startCell\",\"comment\":\"Top-left cell address for the table (e.g., \\\"A1\\\")\"},{\"name\":\"inputJson\",\"comment\":\"JSON string containing array of objects with consistent keys\"},{\"name\":\"tableName\",\"comment\":\"Optional name for the created table\"}]}}","apiInfo":"{\"variant\":\"synchronous\",\"variantVersion\":2}"}
+/**
+  * Creates a table from JSON data on a specified worksheet.
+  * 
+  * @param sheetName Name of the worksheet where the table will be created
+  * @param startCell Top-left cell address for the table (e.g., "A1")
+  * @param inputJson JSON string containing array of objects with consistent keys
+  * @param tableName Optional name for the created table
+  */
+function main(
+  workbook: ExcelScript.Workbook,
+  sheetName: string,
+  startCell: string,
+  inputJson: string,
+  tableName?: string
+) {
+  let returnMsg: string
+
+  const sheet = workbook.getWorksheet(sheetName);
+  if (!sheet) throw new Error(`Worksheet "${sheetName}" not found.`);
+
+  let inputData: Record<string, string | number | boolean>[];
+  try {
+    inputData = JSON.parse(inputJson);
+  } catch (e) {
+    throw new Error(`Failed to parse input JSON: ${e.message}`);
+  }
+
+  // nothing to write
+  if (!Array.isArray(inputData) || inputData.length === 0) return {
+    "message": "Input JSON has no data."
+  }
+
+  // calculate range based on data dimensions
+  const numCols = Object.keys(inputData[0]).length;
+
+  // convert startCell to a full range
+  const startRange = sheet.getRange(startCell);
+  const endRange = startRange.getOffsetRange(0, numCols - 1);
+  const tableRange = `${startCell}:${endRange.getAddress().split('!')[1]}`
+
+  // create table with headers only
+  const table = sheet.addTable(tableRange, true);
+  if (tableName) {
+    try {
+      table.setName(tableName);
+    } catch (e) {
+      const allTables = workbook.getTables().map(tbl => tbl.getName());
+      if (allTables.includes(tableName)) {
+        returnMsg = `A table already exists with the name "${tableName}".`
+      } else {
+        throw new Error(e);
+      }
+    }
+  }
+
+  // set column headers
+  const inputKeys = Object.keys(inputData[0]).map(k => k.trim());
+  const columns = table.getColumns();
+  inputKeys.forEach((key, index) => {
+    columns[index].setName(key);
+  });
+
+  // add data rows
+  const rowsData = inputData.map(obj => inputKeys.map(key => obj[key]));
+  table.addRows(-1, rowsData);
+  return {
+    "message": "Successfully created table." + ((returnMsg) ? "\ " + returnMsg : ""), "createdTableName": table.getName()
+  };
+}

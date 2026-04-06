@@ -1,1 +1,114 @@
-{"version":"0.3.0","body":"/**\r\n * Creates a pivot table from an existing table with specified row and value aggregations.\r\n * \r\n * @param tableName Name of the source table for the pivot table.\r\n * @param location Where to place the pivot table: \"New sheet\" creates a new worksheet, \"Existing sheet\" places it below the source table unless a sheet name is specified.\r\n * @param rowsColumn Column name to use for pivot table rows.\r\n * @param valuesColumns Array of column names to aggregate in the pivot table values area.\r\n * @param valuesOperation Aggregation function to apply to the values columns.\r\n * @param sheetName The name of the sheet the pivot table should be placed on when location is Existing sheet (defaults to same sheet as table). If location is New sheet, this is the name the new sheet should have.\r\n * @param pivotTableName Optional name for the pivot table (auto-generates if blank or already exists)\r\n */\r\nfunction main(\r\n\tworkbook: ExcelScript.Workbook,\r\n\ttableName: string,\r\n\tlocation: \"New sheet\" | \"Existing sheet\" = \"New sheet\",\r\n\trowsColumn: string,\r\n\tvaluesColumns: Array<string>,\r\n\tvaluesOperation: \"Sum\" | \"Count\" | \"Average\" | \"Product\" | \"Max\" | \"Min\" = \"Sum\",\r\n\tcolumnsColumn?: string,\r\n\tsheetName?: string,\r\n\tpivotTableName?: string\r\n) {\r\n\tconst table = workbook.getTable(tableName);\r\n\tif (!table) {\r\n\t\tthrow new Error(`Table \"${tableName}\" not found.`);\r\n\t}\r\n\r\n\tif (table.getRowCount() === 0) {\r\n\t\tthrow new Error(`Table \"${tableName}\" has no data.`);\r\n\t}\r\n\r\n\t// make sure specified columns exist\r\n\tconst tableCols = table.getColumns().map((col) => col.getName());\r\n\tlet missingColumn: string;\r\n\tif (!tableCols.includes(rowsColumn)) {\r\n\t\tthrow new Error(`There is no column \"${rowsColumn}\" in table \"${tableName}\".`);\r\n\t}\r\n\telse {\r\n\t\tvaluesColumns.forEach((colName) => {\r\n\t\t\tif (!tableCols.includes(colName)) {\r\n\t\t\t\tthrow new Error(`There is no column \"${colName}\" in table \"${tableName}\".`);\r\n\t\t\t}\r\n\t\t});\r\n\t}\r\n\r\n\t// validate operation\r\n\tconst operation = ExcelScript.AggregationFunction[valuesOperation.toLowerCase() as keyof typeof ExcelScript.AggregationFunction];\r\n\tif (!operation) {\r\n\t\tthrow new Error(`Invalid operation: ${valuesOperation}`);\r\n\t}\r\n\r\n\t// get range of where to add pivot table\r\n\tlet locationRange: ExcelScript.Range;\r\n\tif (location === \"New sheet\") {\r\n\t\tlocationRange = workbook.addWorksheet(sheetName).getRange(\"A1\");\r\n\t} else {\r\n\t\tlet locationReference: ExcelScript.Worksheet;\r\n\t\tif (sheetName) {\r\n\t\t\tconst sheet = workbook.getWorksheet(sheetName);\r\n\t\t\tif (!sheet) {\r\n\t\t\t\tthrow new Error(`There is no worksheet \"${sheetName}\" in the Excel file.`);\r\n\t\t\t}\r\n\t\t\tlocationReference = sheet;\r\n\t\t} else {\r\n\t\t\tlocationReference = table.getWorksheet();\r\n\t\t}\r\n\t\tconst lastUsedRow = locationReference.getUsedRange().getLastRow();\r\n\t\tconsole.log(`Destination: '${locationReference.getName()}'!A${lastUsedRow.getRowIndex() + 3}`); // 2 for offset + 1 for 0-based index\r\n\t\tlocationRange = lastUsedRow.getCell(0, 0).getOffsetRange(2, 0);\r\n\t}\r\n\tconst usedSheetName = locationRange.getWorksheet().getName();\r\n\r\n\t// get next available pivot table name if provided one is taken or blank\r\n\tconst existingPivotTables = workbook.getPivotTables().map((pvtTbl) => pvtTbl.getName());\r\n\tif (!pivotTableName || existingPivotTables.includes(pivotTableName)) {\r\n\t\tconst defaultName = \"PivotTable\";\r\n\t\tlet i = 1;\r\n\t\tconst maxAttempts = 100;\r\n\t\twhile (existingPivotTables.includes(defaultName + i) && i < maxAttempts) {\r\n\t\t\ti++;\r\n\t\t}\r\n\r\n\t\tif (i >= maxAttempts) {\r\n\t\t\tthrow new Error(`Unable to generate unique pivot table name after ${i} attempts`);\r\n\t\t}\r\n\r\n\t\tpivotTableName = defaultName + i;\r\n\t}\r\n\r\n\t// create pivot table\r\n\tconst pivotTable = workbook.addPivotTable(pivotTableName, table, locationRange);\r\n\t// add rows field to pivot table\r\n\tpivotTable.addRowHierarchy(pivotTable.getHierarchy(rowsColumn));\r\n\t// add columns field to pivot table if it exists\r\n\tif (columnsColumn) {\r\n\t\tpivotTable.addColumnHierarchy(pivotTable.getHierarchy(columnsColumn));\r\n\t}\r\n\t// add values fields to pivot table\r\n\tvaluesColumns.forEach((colName) => {\r\n\t\tconst valuesField = pivotTable.addDataHierarchy(pivotTable.getHierarchy(colName));\r\n\t\tvaluesField.setSummarizeBy(operation);\r\n\t});\r\n\r\n\treturn {\r\n\t\t\"message\": \"Successfully created a pivot table.\",\r\n\t\t\"createdPivotTableName\": pivotTableName,\r\n\t\t\"usedSheetName\": usedSheetName\r\n\t}\r\n}","description":"","noCodeMetadata":"","parameterInfo":"{\"version\":1,\"originalParameterOrder\":[{\"name\":\"tableName\",\"index\":0},{\"name\":\"location\",\"index\":1},{\"name\":\"rowsColumn\",\"index\":2},{\"name\":\"valuesColumns\",\"index\":3},{\"name\":\"valuesOperation\",\"index\":4},{\"name\":\"columnsColumn\",\"index\":5},{\"name\":\"sheetName\",\"index\":6},{\"name\":\"pivotTableName\",\"index\":7}],\"parameterSchema\":{\"type\":\"object\",\"required\":[\"tableName\",\"location\",\"rowsColumn\",\"valuesColumns\",\"valuesOperation\"],\"properties\":{\"tableName\":{\"type\":\"string\"},\"location\":{\"type\":\"string\",\"enum\":[\"New sheet\",\"Existing sheet\"],\"default\":\"New sheet\"},\"rowsColumn\":{\"type\":\"string\"},\"valuesColumns\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"valuesOperation\":{\"type\":\"string\",\"enum\":[\"Sum\",\"Count\",\"Average\",\"Product\",\"Max\",\"Min\"],\"default\":\"Sum\"},\"columnsColumn\":{\"type\":\"string\"},\"sheetName\":{\"type\":\"string\"},\"pivotTableName\":{\"type\":\"string\"}}},\"returnSchema\":{\"type\":\"object\",\"properties\":{\"result\":{\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"createdPivotTableName\":{\"type\":\"string\"},\"usedSheetName\":{\"type\":\"string\"}}}}},\"signature\":{\"comment\":\"Creates a pivot table from an existing table with specified row and value aggregations.\",\"parameters\":[{\"name\":\"workbook\",\"comment\":\"\"},{\"name\":\"tableName\",\"comment\":\"Name of the source table for the pivot table.\"},{\"name\":\"location\",\"comment\":\"Where to place the pivot table: \\\"New sheet\\\" creates a new worksheet, \\\"Existing sheet\\\" places it below the source table unless a sheet name is specified.\"},{\"name\":\"rowsColumn\",\"comment\":\"Column name to use for pivot table rows.\"},{\"name\":\"valuesColumns\",\"comment\":\"Array of column names to aggregate in the pivot table values area.\"},{\"name\":\"valuesOperation\",\"comment\":\"Aggregation function to apply to the values columns.\"},{\"name\":\"columnsColumn\",\"comment\":\"\"},{\"name\":\"sheetName\",\"comment\":\"The name of the sheet the pivot table should be placed on when location is Existing sheet (defaults to same sheet as table). If location is New sheet, this is the name the new sheet should have.\"},{\"name\":\"pivotTableName\",\"comment\":\"Optional name for the pivot table (auto-generates if blank or already exists)\"}]}}","apiInfo":"{\"variant\":\"synchronous\",\"variantVersion\":2}"}
+/**
+  * Creates a pivot table from an existing table with specified row and value aggregations.
+  *
+  * @param tableName Name of the source table for the pivot table.
+  * @param location Where to place the pivot table: "New sheet" creates a new worksheet, "Existing sheet" places it below the source table unless a sheet name is specified.
+  * @param rowsColumn Column name to use for pivot table rows.
+  * @param valuesColumns Array of column names to aggregate in the pivot table values area.
+  * @param valuesOperation Aggregation function to apply to the values columns.
+  * @param sheetName The name of the sheet the pivot table should be placed on when location is Existing sheet (defaults to same sheet as table). If location is New sheet, this is the name the new sheet should have.
+  * @param pivotTableName Optional name for the pivot table (auto-generates if blank or already exists);
+  */
+function main(
+  workbook: ExcelScript.Workbook,
+  tableName: string,
+  location: "New sheet" | "Existing sheet" = "New sheet",
+  rowsColumn: string,
+  valuesColumns: Array<string>,
+  valuesOperation: "Sum" | "Count" | "Average" | "Product" | "Max" | "Min" = "Sum",
+  columnsColumn?: string,
+  sheetName?: string,
+  pivotTableName?: string
+) {
+  const table = workbook.getTable(tableName);
+  if (!table) {
+    throw new Error(`Table "${tableName}" not found.`);
+  }
+
+  if (table.getRowCount() === 0) {
+    throw new Error(`Table "${tableName}" has no data.`);
+  }
+
+  // make sure specified columns exist
+  const tableCols = table.getColumns().map((col) => col.getName());
+  let missingColumn: string;
+  if (!tableCols.includes(rowsColumn)) {
+    throw new Error(`There is no column "${rowsColumn}" in table "${tableName}".`);
+  } else {
+    valuesColumns.forEach((colName) => {
+      if (!tableCols.includes(colName)) {
+        throw new Error(`There is no column "${colName}" in table "${tableName}".`);
+      }
+    });
+  }
+
+  // validate operation
+  const operation = ExcelScript.AggregationFunction[valuesOperation.toLowerCase() as keyof typeof ExcelScript.AggregationFunction];
+  if (!operation) {
+    throw new Error(`Invalid operation: ${valuesOperation}`);
+  }
+
+  // get range of where to add pivot table
+  let locationRange: ExcelScript.Range;
+  if (location === "New sheet") {
+    locationRange = workbook.addWorksheet(sheetName).getRange("A1");
+  } else {
+    let locationReference: ExcelScript.Worksheet;
+    if (sheetName) {
+      const sheet = workbook.getWorksheet(sheetName);
+      if (!sheet) {
+        throw new Error(`There is no worksheet "${sheetName}" in the Excel file.`);
+      }
+
+      locationReference = sheet;
+    } else {
+      locationReference = table.getWorksheet();
+    }
+    const lastUsedRow = locationReference.getUsedRange().getLastRow();
+    // 2 for offset + 1 for 0-based index
+    console.log(`Destination: '${locationReference.getName()}'!A${lastUsedRow.getRowIndex() + 3}`);
+    locationRange = lastUsedRow.getCell(0, 0).getOffsetRange(2, 0);
+  }
+
+  const usedSheetName = locationRange.getWorksheet().getName();
+
+  // get next available pivot table name if provided one is taken or blank
+  const existingPivotTables = workbook.getPivotTables().map((pvtTbl) => pvtTbl.getName());
+  if (!pivotTableName || existingPivotTables.includes(pivotTableName)) {
+    const defaultName = "PivotTable";
+    let i = 1;
+    const maxAttempts = 100;
+    while (existingPivotTables.includes(defaultName + i) && i < maxAttempts) {
+      i++;
+    }
+
+    if (i >= maxAttempts) {
+      throw new Error(`Unable to generate unique pivot table name after ${i} attempts`);
+    }
+
+    pivotTableName = defaultName + i;
+  }
+
+  // create pivot table
+  const pivotTable = workbook.addPivotTable(pivotTableName, table, locationRange);
+
+  // add rows field to pivot table
+  pivotTable.addRowHierarchy(pivotTable.getHierarchy(rowsColumn));
+
+  // add columns field to pivot table if it exists
+  if (columnsColumn) {
+    pivotTable.addColumnHierarchy(pivotTable.getHierarchy(columnsColumn));
+  }
+
+  // add values fields to pivot table
+  valuesColumns.forEach((colName) => {
+    const valuesField = pivotTable.addDataHierarchy(pivotTable.getHierarchy(colName));
+    valuesField.setSummarizeBy(operation);
+  });
+
+  return {
+    "message": "Successfully created a pivot table.",
+    "createdPivotTableName": pivotTableName,
+    "usedSheetName": usedSheetName
+  }
+}

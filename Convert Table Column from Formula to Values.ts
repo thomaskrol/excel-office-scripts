@@ -1,1 +1,41 @@
-{"version":"0.3.0","body":"function main(\r\n\tworkbook: ExcelScript.Workbook,\r\n\ttableName: string,\r\n\tcolumnName: string,\r\n\tfullColumn: boolean = false,\r\n\tnumberOfRowsFromEnd?: number\r\n) {\r\n\tif (!fullColumn && !numberOfRowsFromEnd) {\r\n\t\tthrow new Error(`Parameter \"numberOfRowsFromEnd\" is required when fullColumn is set to false.`);\r\n\t}\r\n\t\r\n\tconst table = workbook.getTable(tableName);\r\n\tif (!table) {\r\n\t\tthrow new Error(`Table \"${tableName}\" not found.`);\r\n\t}\r\n\r\n\tconst column = table.getColumnByName(columnName);\r\n\tif (!column) {\r\n\t\tthrow new Error(`Column \"${columnName}\" not found.`);\r\n\t}\r\n\r\n\t// clear filters so following actions are not impacted\r\n\ttable.getAutoFilter().clearCriteria();\r\n\r\n\tconst totalColRange = column.getRangeBetweenHeaderAndTotal();\r\n\r\n\tlet range: ExcelScript.Range;\r\n\tif (fullColumn) {\r\n\t\trange = totalColRange;\r\n\r\n\t} else if (numberOfRowsFromEnd) {\r\n\t\trange = totalColRange.getLastCell().getOffsetRange(1 - numberOfRowsFromEnd, 0).getAbsoluteResizedRange(numberOfRowsFromEnd, 1)\r\n\r\n\t} else {\r\n\t\tthrow new Error(`numberOfRowsFromEnd required when fullColumn is false.`);\r\n\t}\r\n\r\n\trange.copyFrom(\r\n\t\trange,\r\n\t\tExcelScript.RangeCopyType.values,\r\n\t\tfalse,\r\n\t\tfalse\r\n\t);\r\n}","description":"","noCodeMetadata":"","parameterInfo":"{\"version\":1,\"originalParameterOrder\":[{\"name\":\"tableName\",\"index\":0},{\"name\":\"columnName\",\"index\":1},{\"name\":\"fullColumn\",\"index\":2},{\"name\":\"numberOfRowsFromEnd\",\"index\":3}],\"parameterSchema\":{\"type\":\"object\",\"required\":[\"tableName\",\"columnName\",\"fullColumn\"],\"properties\":{\"tableName\":{\"type\":\"string\"},\"columnName\":{\"type\":\"string\"},\"fullColumn\":{\"type\":\"boolean\",\"default\":false},\"numberOfRowsFromEnd\":{\"type\":\"number\"}}},\"returnSchema\":{\"type\":\"object\",\"properties\":{}},\"signature\":{\"comment\":\"\",\"parameters\":[{\"name\":\"workbook\",\"comment\":\"\"},{\"name\":\"tableName\",\"comment\":\"\"},{\"name\":\"columnName\",\"comment\":\"\"},{\"name\":\"fullColumn\",\"comment\":\"\"},{\"name\":\"numberOfRowsFromEnd\",\"comment\":\"\"}]}}","apiInfo":"{\"variant\":\"synchronous\",\"variantVersion\":2}"}
+function main(
+  workbook: ExcelScript.Workbook,
+  tableName: string,
+  columnName: string,
+  fullColumn: boolean = false,
+  numberOfRowsFromEnd?: number
+) {
+  if (!fullColumn && !numberOfRowsFromEnd) {
+    throw new Error(`Parameter "numberOfRowsFromEnd" is required when fullColumn is set to false.`);
+  }
+
+  const table = workbook.getTable(tableName);
+  if (!table) {
+    throw new Error(`Table "${tableName}" not found.`);
+  }
+
+  const column = table.getColumnByName(columnName);
+  if (!column) {
+    throw new Error(`Column "${columnName}" not found.`);
+  }
+
+  // clear filters so following actions are not impacted
+  table.getAutoFilter().clearCriteria();
+
+  const totalColRange = column.getRangeBetweenHeaderAndTotal();
+  let range: ExcelScript.Range;
+  if (fullColumn) {
+    range = totalColRange;
+  } else if (numberOfRowsFromEnd) {
+    range = totalColRange.getLastCell().getOffsetRange(1 - numberOfRowsFromEnd, 0).getAbsoluteResizedRange(numberOfRowsFromEnd, 1);
+  } else {
+    throw new Error(`numberOfRowsFromEnd required when fullColumn is false.`);
+  }
+
+  range.copyFrom(
+    range,
+    ExcelScript.RangeCopyType.values,
+    false,
+    false
+  );
+}

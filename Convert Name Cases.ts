@@ -1,1 +1,39 @@
-{"version":"0.3.0","body":"function main(workbook: ExcelScript.Workbook, tableName: string, columnsToFix: string[]) {\n  const table = workbook.getTable(tableName);\n  if (!table) {\n    throw new Error(`Table \"${tableName}\" not found.`);\n  }\n\n  // Process each column\n  columnsToFix.forEach(columnName => {\n    let column = table.getColumnByName(columnName);\n    let values = column.getRange().getValues();\n\n    // Loop through each row in the column\n    for (let i = 0; i < values.length; i++) {\n      let cellValue = values[i][0];\n\n      if (typeof cellValue !== \"string\" || cellValue.trim() === \"\") {\n        continue;\n      }\n\n      // Check if the value is all uppercase or all lowercase\n      if (cellValue === cellValue.toUpperCase() || cellValue === cellValue.toLowerCase()) {\n        // Convert to Proper Case while handling accents\n        let properCaseValue = cellValue\n          .toLowerCase()\n          .replace(/(^|\\s)([a-záéíóúüñâàäêëîïôöûüç])/g, (_, boundary, letter) => boundary + letter.toUpperCase());\n\n        // Update the value in the array\n        values[i][0] = properCaseValue;\n      }\n    }\n\n    // Write the updated values back to the column\n    column.getRange().setValues(values);\n  });\n}","description":"","noCodeMetadata":"","parameterInfo":"{\"version\":1,\"originalParameterOrder\":[{\"name\":\"tableName\",\"index\":0},{\"name\":\"columnsToFix\",\"index\":1}],\"parameterSchema\":{\"type\":\"object\",\"required\":[\"tableName\",\"columnsToFix\"],\"properties\":{\"tableName\":{\"type\":\"string\"},\"columnsToFix\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}},\"returnSchema\":{\"type\":\"object\",\"properties\":{}},\"signature\":{\"comment\":\"\",\"parameters\":[{\"name\":\"workbook\",\"comment\":\"\"},{\"name\":\"tableName\",\"comment\":\"\"},{\"name\":\"columnsToFix\",\"comment\":\"\"}]}}","apiInfo":"{\"variant\":\"synchronous\",\"variantVersion\":2}"}
+function main(
+  workbook: ExcelScript.Workbook,
+  tableName: string,
+  columnsToFix: string[];
+) {
+  const table = workbook.getTable(tableName);
+  if (!table) {
+    throw new Error(`Table "${tableName}" not found.`);
+  }
+
+  // Process each column
+  columnsToFix.forEach(columnName => {
+    let column = table.getColumnByName(columnName);
+    let values = column.getRange().getValues();
+
+    // Loop through each row in the column
+    for (let i = 0; i < values.length; i++) {
+      let cellValue = values[i][0];
+      if (typeof cellValue !== "string" || cellValue.trim() === "") {
+        continue;
+      }
+
+      // Check if the value is all uppercase or all lowercase
+      if (cellValue === cellValue.toUpperCase() || cellValue === cellValue.toLowerCase()) {
+        // Convert to Proper Case while handling accents
+        let properCaseValue = cellValue.toLowerCase().replace(
+          /(^|\\s)([a-záéíóúüñâàäêëîïôöûüç])/g,
+          (_, boundary, letter) => boundary + letter.toUpperCase();
+        );
+
+        // Update the value in the array
+        values[i][0] = properCaseValue
+      }
+    }
+
+    // Write the updated values back to the column
+    column.getRange().setValues(values);
+  });
+}

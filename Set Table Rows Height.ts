@@ -1,1 +1,19 @@
-{"version":"0.3.0","body":"/**\n * Sets the row height for all rows in a table.\n * \n * @param tableName Name of the table to modify\n * @param rowHeight Height in points to apply to all table rows (defaults to 14.25)\n */\nfunction main(workbook: ExcelScript.Workbook, tableName: string, rowHeight?: number) {\n\tconst table = workbook.getTable(tableName);\n\tif (!table) {\n\t\tthrow new Error(`Table \"${tableName}\" not found.`);\n\t}\n\n\t// reset table rows height\n\ttable.getRange().getFormat().setRowHeight(rowHeight || 14.25);\n}","description":"","noCodeMetadata":"","parameterInfo":"{\"version\":1,\"originalParameterOrder\":[{\"name\":\"tableName\",\"index\":0},{\"name\":\"rowHeight\",\"index\":1}],\"parameterSchema\":{\"type\":\"object\",\"required\":[\"tableName\"],\"properties\":{\"tableName\":{\"type\":\"string\"},\"rowHeight\":{\"type\":\"number\"}}},\"returnSchema\":{\"type\":\"object\",\"properties\":{}},\"signature\":{\"comment\":\"Sets the row height for all rows in a table.\",\"parameters\":[{\"name\":\"workbook\",\"comment\":\"\"},{\"name\":\"tableName\",\"comment\":\"Name of the table to modify\"},{\"name\":\"rowHeight\",\"comment\":\"Height in points to apply to all table rows (defaults to 14.25)\"}]}}","apiInfo":"{\"variant\":\"synchronous\",\"variantVersion\":2}"}
+/**
+  * Sets the row height for all rows in a table.
+  * 
+  * @param tableName Name of the table to modify
+  * @param rowHeight Height in points to apply to all table rows (defaults to 14.25)
+  */
+function main(
+  workbook: ExcelScript.Workbook,
+  tableName: string,
+  rowHeight?: number
+) {
+  const table = workbook.getTable(tableName);
+  if (!table) {
+    throw new Error(`Table "${tableName}" not found.`);
+  }
+
+  // use default row height unless provided
+  table.getRange().getFormat().setRowHeight(rowHeight || 14.25);
+}

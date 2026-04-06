@@ -1,1 +1,18 @@
-{"version":"0.3.0","body":"function main(workbook: ExcelScript.Workbook, tableName: string, columnName: string) {\n  const table = workbook.getTable(tableName);\n  if (!table) {\n    throw new Error(`Table \"${tableName}\" not found.`);\n  }\n\n  // Get the column index based on the column name\n  const columnIndex = table.getHeaderRowRange().getValues()[0].indexOf(columnName);\n\n  if (columnIndex !== -1) {\n    table.getSort().apply([{ key: columnIndex, ascending: true }]);\n  } else {\n    throw new Error(`Column \"${columnName}\" not found.`);\n  }\n}","description":"","noCodeMetadata":"","parameterInfo":"{\"version\":1,\"originalParameterOrder\":[{\"name\":\"tableName\",\"index\":0},{\"name\":\"columnName\",\"index\":1}],\"parameterSchema\":{\"type\":\"object\",\"required\":[\"tableName\",\"columnName\"],\"properties\":{\"tableName\":{\"type\":\"string\"},\"columnName\":{\"type\":\"string\"}}},\"returnSchema\":{\"type\":\"object\",\"properties\":{}},\"signature\":{\"comment\":\"\",\"parameters\":[{\"name\":\"workbook\",\"comment\":\"\"},{\"name\":\"tableName\",\"comment\":\"\"},{\"name\":\"columnName\",\"comment\":\"\"}]}}","apiInfo":"{\"variant\":\"synchronous\",\"variantVersion\":2}"}
+function main(
+  workbook: ExcelScript.Workbook,
+  tableName: string,
+  columnName: string
+) {
+  const table = workbook.getTable(tableName);
+  if (!table) {
+    throw new Error(`Table "${tableName}" not found.`);
+  }
+
+  // Get the column index based on the column name
+  const columnIndex = table.getHeaderRowRange().getValues()[0].indexOf(columnName);
+  if (columnIndex !== -1) {
+    table.getSort().apply([{ key: columnIndex, ascending: true }]);
+  } else {
+    throw new Error(`Column "${columnName}" not found.`);
+  }
+}

@@ -1,1 +1,4 @@
-{"version":"0.3.0","body":"function main(workbook: ExcelScript.Workbook) {\r\n\t// Set workbook calculation mode\r\n\tworkbook.getApplication().setCalculationMode(ExcelScript.CalculationMode.automatic);\r\n}","description":"","noCodeMetadata":"","parameterInfo":"{\"version\":1,\"originalParameterOrder\":[],\"parameterSchema\":{\"type\":\"object\",\"default\":{},\"x-ms-visibility\":\"internal\"},\"returnSchema\":{\"type\":\"object\",\"properties\":{}},\"signature\":{\"comment\":\"\",\"parameters\":[{\"name\":\"workbook\",\"comment\":\"\"}]}}","apiInfo":"{\"variant\":\"synchronous\",\"variantVersion\":2}"}
+function main(workbook: ExcelScript.Workbook) {
+  // Set workbook calculation mode
+  workbook.getApplication().setCalculationMode(ExcelScript.CalculationMode.automatic);
+}

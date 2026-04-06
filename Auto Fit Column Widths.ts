@@ -1,1 +1,11 @@
-{"version":"0.3.0","body":"function main(workbook: ExcelScript.Workbook, tableName: string) {\n  const table = workbook.getTable(tableName);\n  if (!table) {\n    throw new Error(`Table \"${tableName}\" not found.`);\n  }\n\n  // auto fit column widths\n  table.getRange().getFormat().autofitColumns();\n}","description":"","noCodeMetadata":"","parameterInfo":"{\"version\":1,\"originalParameterOrder\":[{\"name\":\"tableName\",\"index\":0}],\"parameterSchema\":{\"type\":\"object\",\"required\":[\"tableName\"],\"properties\":{\"tableName\":{\"type\":\"string\"}}},\"returnSchema\":{\"type\":\"object\",\"properties\":{}},\"signature\":{\"comment\":\"\",\"parameters\":[{\"name\":\"workbook\",\"comment\":\"\"},{\"name\":\"tableName\",\"comment\":\"\"}]}}","apiInfo":"{\"variant\":\"synchronous\",\"variantVersion\":2}"}
+function main(
+  workbook: ExcelScript.Workbook,
+  tableName: string
+) {
+  const table = workbook.getTable(tableName);
+  if (!table) {
+    throw new Error(`Table "${tableName}" not found.`);
+  }
+
+  table.getRange().getFormat().autofitColumns();
+}
