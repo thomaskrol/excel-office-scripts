@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "lib": [
-      "ES2015"
+      "ES2016",
+      "DOM"
     ],
     "noEmit": true,
     "typeRoots": [
