@@ -4,22 +4,38 @@ A collection of [Office Scripts](https://learn.microsoft.com/en-us/office/dev/sc
 
 ## Usage
 
-Each script is used as a Run script or Run script from SharePoint library action in the Excel Online (Business) connector.
+Each script is used as a **Run script** or **Run script from SharePoint library** action in the Excel Online (Business) connector. Prerequisites:
 
-Script outputs can be read in later actions from using `outputs('Run_script')?['body/result']`.
+- Office Scripts enabled in the tenant
+- Workbook stored in OneDrive or SharePoint
+- Tables/sheets referenced by script parameters already exist
+
+Script outputs can be read in later flow actions using `outputs('Run_script')?['body/result']`.
+
+### JSON parameter tips
+
+- Parameters like `inputJson` and `updatesJson` must be passed as a JSON string, not an object. Use a Compose action to build the string first.
+- Keep property names aligned exactly with their respective table/column names.
+- Prefer ISO dates (`YYYY-MM-DD`) for date-like text fields.
+
+### Troubleshooting
+
+| Symptom | Likely cause |
+| --- | --- |
+| `Table "..." not found` | Table name mismatch, check exact casing and spacing |
+| `Column "..." not found` | Column name mismatch or table schema has changed |
+| JSON parse error | Malformed string passed to a JSON parameter, validate with a Compose action first |
+| Script runs but nothing changes | Active filter hiding rows, wrong key value, or wrong sheet context |
 
 ---
 
 ## Repository Layout
 
-- `docs`: Catalog and usage documentation.
-  - [docs/script-catalog.md](docs/script-catalog.md)
-  - [docs/naming-conventions.md](docs/naming-conventions.md)
-  - [docs/power-automate-usage.md](docs/power-automate-usage.md)
-- `scripts/`: Office Script TypeScript sources grouped by domain.
-  - `scripts/tables`: table-focused Office Scripts
-  - `scripts/worksheets`: worksheet/workbook scripts
-  - `scripts/workbook-independant`: utility scripts that do not require table/sheet context
+- `scripts/tables`: table-focused Office Scripts
+- `scripts/worksheets`: worksheet/workbook scripts
+- `scripts/workbook-independant`: utility scripts that do not require table/sheet context
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for conventions when adding new scripts.
 
 ---
 
