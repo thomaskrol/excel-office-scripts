@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "lib": [
-      "ES2016",
+      "ES2024",
       "DOM"
     ],
     "noEmit": true,
