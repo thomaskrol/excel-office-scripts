@@ -4,227 +4,443 @@ A collection of [Office Scripts](https://learn.microsoft.com/en-us/office/dev/sc
 
 ## Usage
 
-Each script is used as a **Run script** or **Run script from SharePoint library** action in a Power Automate flow via the **Excel Online (Business)** connector. Select the script by name and map flow variables to its parameters.
+Each script is used as a Run script or Run script from SharePoint library action in the Excel Online (Business) connector.
 
-Scripts return structured values (JSON objects or primitives) where noted, which can be parsed in subsequent flow actions using `outputs('Run_script')?['body/result']`.
+Script outputs can be read in later actions from using `outputs('Run_script')?['body/result']`.
+
+---
+
+## Repository Layout
+
+- `docs`: Catalog and usage documentation.
+  - [docs/script-catalog.md](docs/script-catalog.md)
+  - [docs/naming-conventions.md](docs/naming-conventions.md)
+  - [docs/power-automate-usage.md](docs/power-automate-usage.md)
+- `scripts/`: Office Script TypeScript sources grouped by domain.
+  - `scripts/tables`: table-focused Office Scripts
+  - `scripts/worksheets`: worksheet/workbook scripts
+  - `scripts/workbook-independant`: utility scripts that do not require table/sheet context
 
 ---
 
 ## Scripts
 
-### Add Rows To Table
+### [Add Rows To Table](scripts/tables/add-rows-to-table.ts)
 
-Adds one or more rows to an existing Excel table from a JSON array. Columns not present in the input will be left empty.
+Adds one or more rows to an existing table from a JSON array.
 
-| Parameter   | Type   | Description                                                 |
-| ----------- | ------ | ----------------------------------------------------------- |
-| `tableName` | string | Name of the target table                                    |
-| `inputJson` | string | JSON array of objects with keys matching table column names |
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `tableName` | string | Target table name |
+| `inputJson` | string | JSON array whose keys match table columns |
 
-**Returns:** `"Rows added successfully."` or an error message string.
+Example input:
 
----
+```json
+{
+  "tableName": "Orders",
+  "inputJson": "[{\"OrderId\":\"SO-101\",\"Status\":\"New\"}]"
+}
+```
 
-### Auto Fit Column Widths
+Example output:
 
-Auto-fits all column widths in a table to best fit their contents.
-
-| Parameter   | Type   | Description              |
-| ----------- | ------ | ------------------------ |
-| `tableName` | string | Name of the target table |
-
----
-
-### Automatic Calculations
-
-Sets the workbook calculation mode to **automatic**, forcing recalculation of all formulas. Useful when a previous step has set calculation to manual for performance.
-
-_No parameters beyond the workbook._
+```json
+"Rows added successfully."
+```
 
 ---
 
-### Clear Cell Contents
+### [Auto Fit Column Widths](scripts/tables/auto-fit-column-widths.ts)
 
-Clears the contents of a specific cell in a table identified by column name and row index.
+Auto-fits all column widths in a table.
 
-| Parameter    | Type   | Description                                                   |
-| ------------ | ------ | ------------------------------------------------------------- |
-| `tableName`  | string | Name of the target table                                      |
-| `columnName` | string | Name of the column                                            |
-| `rowIndex`   | number | Zero-based row index within the table data (excluding header) |
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `tableName` | string | Target table name |
 
----
+Example input:
 
-### Convert Name Cases
-
-Converts values in specified columns to Proper Case when they are entirely uppercase or entirely lowercase. Handles accented characters common in European names.
-
-| Parameter      | Type     | Description                                   |
-| -------------- | -------- | --------------------------------------------- |
-| `tableName`    | string   | Name of the target table                      |
-| `columnsToFix` | string[] | Column names whose values should be converted |
+```json
+{
+  "tableName": "Orders"
+}
+```
 
 ---
 
-### Convert Table Column from Formula to Values
+### [Automatic Calculations](scripts/worksheets/automatic-calculations.ts)
 
-Replaces formulas in a table column with their calculated static values. Clears active filters before converting to ensure all rows are affected.
-
-| Parameter             | Type               | Description                                                                    |
-| --------------------- | ------------------ | ------------------------------------------------------------------------------ |
-| `tableName`           | string             | Name of the target table                                                       |
-| `columnName`          | string             | Name of the column to convert                                                  |
-| `fullColumn`          | boolean            | `true` to convert the entire column; `false` to convert only the last n rows   |
-| `numberOfRowsFromEnd` | number_(optional)_ | Number of rows from the end to convert (required when `fullColumn` is `false`) |
+Sets workbook calculation mode to automatic.
 
 ---
 
-### Create Pivot Table
+### [Clear Cell Contents](scripts/tables/clear-cell-contents.ts)
 
-Creates a pivot table from an existing table with configurable row hierarchies, value aggregations, and optional column hierarchy.
+Clears one cell in a table by data-row index and column name.
 
-| Parameter         | Type                                                                     | Description                                                           |
-| ----------------- | ------------------------------------------------------------------------ | --------------------------------------------------------------------- |
-| `tableName`       | string                                                                   | Name of the source table                                              |
-| `location`        | `"New sheet"` \| `"Existing sheet"`                                      | Where to place the pivot table                                        |
-| `rowsColumn`      | string                                                                   | Column to use for row grouping                                        |
-| `valuesColumns`   | string[]                                                                 | Columns to aggregate                                                  |
-| `valuesOperation` | `"Sum"` \| `"Count"` \| `"Average"` \| `"Product"` \| `"Max"` \| `"Min"` | Aggregation function                                                  |
-| `columnsColumn`   | string_(optional)_                                                       | Column to use for column grouping                                     |
-| `sheetName`       | string_(optional)_                                                       | Target sheet name (or new sheet name when location is `"New sheet"`)  |
-| `pivotTableName`  | string_(optional)_                                                       | Name for the pivot table (auto-generated if omitted or already taken) |
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `tableName` | string | Target table name |
+| `columnName` | string | Target column name |
+| `rowIndex` | number | Zero-based data row index |
 
-**Returns:** `{ message, createdPivotTableName, usedSheetName }`
+Example input:
 
----
-
-### Create Table From JSON
-
-Creates a new Excel table on a specified worksheet from a JSON array, setting column headers from the JSON keys.
-
-| Parameter   | Type               | Description                                      |
-| ----------- | ------------------ | ------------------------------------------------ |
-| `sheetName` | string             | Name of the target worksheet                     |
-| `startCell` | string             | Top-left cell address for the table (e.g.`"A1"`) |
-| `inputJson` | string             | JSON array of objects with consistent keys       |
-| `tableName` | string_(optional)_ | Name for the created table                       |
-
-**Returns:** `{ message, createdTableName }`
+```json
+{
+  "tableName": "Orders",
+  "columnName": "Status",
+  "rowIndex": 2
+}
+```
 
 ---
 
-### Delete Sheet
+### [Convert Name Cases](scripts/tables/convert-name-cases.ts)
 
-Permanently deletes a worksheet from the workbook.
+Converts all-uppercase/all-lowercase names to Proper Case in selected columns.
 
-| Parameter   | Type   | Description                     |
-| ----------- | ------ | ------------------------------- |
-| `sheetName` | string | Name of the worksheet to delete |
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `tableName` | string | Target table name |
+| `columnsToFix` | string[] | Columns to normalize |
 
----
+Example input:
 
-### Get Differences Between Arrays
-
-Compares two arrays of objects and returns only entries that are new or have changed. New objects are returned in full; changed objects include only the modified fields plus the identifier.
-
-| Parameter      | Type     | Description                                 |
-| -------------- | -------- | ------------------------------------------- |
-| `initialArray` | object[] | The original array to compare against       |
-| `newArray`     | object[] | The updated array to compare                |
-| `idColName`    | string   | Property name used as the unique identifier |
-
-**Returns:** Array of objects representing additions and field-level changes.
+```json
+{
+  "tableName": "Contacts",
+  "columnsToFix": ["FirstName", "LastName"]
+}
+```
 
 ---
 
-### Hide Sheet
+### [Convert Table Column from Formula to Values](scripts/tables/convert-table-column-from-formula-to-values.ts)
 
-Hides a worksheet in the workbook.
+Converts formulas in a table column to static values.
 
-| Parameter   | Type   | Description                   |
-| ----------- | ------ | ----------------------------- |
-| `sheetName` | string | Name of the worksheet to hide |
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `tableName` | string | Target table name |
+| `columnName` | string | Column to convert |
+| `fullColumn` | boolean | Convert all rows when true |
+| `numberOfRowsFromEnd` | number (optional) | Required when `fullColumn` is false |
 
----
+Example input:
 
-### Highlight Specific Table Columns
-
-Highlights table column headers based on column name matching, either from an explicit list or a regular expression.
-
-| Parameter          | Type                                  | Description                                                             |
-| ------------------ | ------------------------------------- | ----------------------------------------------------------------------- |
-| `tableName`        | string                                | Name of the target table                                                |
-| `highlightColor`   | string                                | Fill colour in hex (`#RRGGBB`) or named HTML colour (e.g. `"orange"`)   |
-| `matchType`        | `"List of column names"` \| `"RegEx"` | Matching strategy                                                       |
-| `columnNamesArray` | string[]_(optional)_                  | Exact column names to highlight (required for `"List of column names"`) |
-| `regexPattern`     | string_(optional)_                    | Regex pattern to match column names (required for `"RegEx"`)            |
-| `regexFlags`       | string_(optional)_                    | Regex flags (e.g.`"i"` for case-insensitive)                            |
-
-**Returns:** `{ message, notFoundColumns }` — `notFoundColumns` is populated when using `"List of column names"`.
+```json
+{
+  "tableName": "Orders",
+  "columnName": "Total",
+  "fullColumn": false,
+  "numberOfRowsFromEnd": 50
+}
+```
 
 ---
 
-### Regex Operations
+### [Create Pivot Table](scripts/tables/create-pivot-table.ts)
 
-Performs a regex operation on an input string without needing a spreadsheet cell. Useful for string manipulation within a Power Automate flow.
+Creates a pivot table from a source table.
 
-| Parameter       | Type                                                           | Description                                   |
-| --------------- | -------------------------------------------------------------- | --------------------------------------------- |
-| `operation`     | `"all matches"` \| `"test match"` \| `"replace"` \| `"groups"` | Operation to perform                          |
-| `searchString`  | string                                                         | The string to operate on                      |
-| `regexPattern`  | string                                                         | The regex pattern                             |
-| `regexFlags`    | string_(optional)_                                             | Regex flags (e.g.`"gi"`)                      |
-| `replaceString` | string_(optional)_                                             | Replacement string (required for `"replace"`) |
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `tableName` | string | Source table |
+| `location` | "New sheet" \| "Existing sheet" | Placement |
+| `rowsColumn` | string | Row grouping column |
+| `valuesColumns` | string[] | Value columns |
+| `valuesOperation` | "Sum" \| "Count" \| "Average" \| "Product" \| "Max" \| "Min" | Aggregation |
+| `columnsColumn` | string (optional) | Column grouping |
+| `sheetName` | string (optional) | Target sheet |
+| `pivotTableName` | string (optional) | Pivot table name |
 
-**Returns:** Matched strings array, boolean, or replaced string depending on operation.
+Example input:
 
----
+```json
+{
+  "tableName": "Orders",
+  "location": "New sheet",
+  "rowsColumn": "Region",
+  "valuesColumns": ["Amount"],
+  "valuesOperation": "Sum",
+  "pivotTableName": "OrdersByRegion"
+}
+```
 
-### Replace in Sheet
+Example output:
 
-Replaces all occurrences of a value in a worksheet with a new value.
-
-| Parameter                 | Type    | Description                                        |
-| ------------------------- | ------- | -------------------------------------------------- |
-| `sheetName`               | string  | Name of the target worksheet                       |
-| `oldValue`                | string  | Value to search for                                |
-| `newValue`                | string  | Replacement value                                  |
-| `matchCase`               | boolean | Case-sensitive search (defaults to `false`)        |
-| `matchEntireCellContents` | boolean | Match only whole-cell values (defaults to `false`) |
-
----
-
-### Set Table Rows Height
-
-Sets the row height for all rows in a table (including the header row).
-
-| Parameter   | Type               | Description                            |
-| ----------- | ------------------ | -------------------------------------- |
-| `tableName` | string             | Name of the target table               |
-| `rowHeight` | number_(optional)_ | Height in points (defaults to `14.25`) |
-
----
-
-### Sort Table By Column Name
-
-Sorts a table in ascending order by the specified column.
-
-| Parameter    | Type   | Description                   |
-| ------------ | ------ | ----------------------------- |
-| `tableName`  | string | Name of the target table      |
-| `columnName` | string | Name of the column to sort by |
+```json
+{
+  "message": "Successfully created a pivot table.",
+  "createdPivotTableName": "OrdersByRegion",
+  "usedSheetName": "Sheet2"
+}
+```
 
 ---
 
-### Update a Row
+### [Create Table From JSON](scripts/tables/create-table-from-json.ts)
 
-Updates one or more column values in a table row identified by a key column value. Returns the Excel row number of the updated row on success.
+Creates a new table from a JSON array on a chosen sheet/cell.
 
-| Parameter       | Type   | Description                                                                         |
-| --------------- | ------ | ----------------------------------------------------------------------------------- |
-| `tableName`     | string | Name of the target table                                                            |
-| `keyColumnName` | string | Column used to identify the target row                                              |
-| `keyValue`      | string | Value in the key column that identifies the row                                     |
-| `updatesJson`   | string | JSON object of column-name-to-value mappings (e.g.`{"Status": "Done", "Count": 5}`) |
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `sheetName` | string | Destination worksheet |
+| `startCell` | string | Top-left table cell (for example A1) |
+| `inputJson` | string | JSON array of objects |
+| `tableName` | string (optional) | Name for created table |
 
-**Returns:** `{ success, message, row }` — `row` is the 1-based Excel row number of the updated row.
+Example input:
+
+```json
+{
+  "sheetName": "Import",
+  "startCell": "A1",
+  "inputJson": "[{\"OrderId\":\"SO-1\",\"Amount\":120}]",
+  "tableName": "ImportedOrders"
+}
+```
+
+Example output:
+
+```json
+{
+  "message": "Successfully created table.",
+  "createdTableName": "ImportedOrders"
+}
+```
+
+---
+
+### [Delete Sheet](scripts/worksheets/delete-sheet.ts)
+
+Deletes a worksheet.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `sheetName` | string | Sheet to delete |
+
+Example input:
+
+```json
+{
+  "sheetName": "OldData"
+}
+```
+
+---
+
+### [Get Differences Between Arrays](scripts/workbook-independant/get-differences-between-arrays.ts)
+
+Returns objects that are new or changed between two arrays.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `initialArray` | object[] | Baseline array |
+| `newArray` | object[] | Updated array |
+| `idColName` | string | Identity key name |
+
+Example input:
+
+```json
+{
+  "initialArray": [{"id":"1","status":"New"}],
+  "newArray": [{"id":"1","status":"Done"},{"id":"2","status":"New"}],
+  "idColName": "id"
+}
+```
+
+Example output:
+
+```json
+[
+  {"status":"Done","id":"1"},
+  {"id":"2","status":"New"}
+]
+```
+
+---
+
+### [Hide Sheet](scripts/worksheets/hide-sheet.ts)
+
+Hides a worksheet.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `sheetName` | string | Sheet to hide |
+
+Example input:
+
+```json
+{
+  "sheetName": "RawData"
+}
+```
+
+---
+
+### [Highlight Specific Table Columns](scripts/tables/highlight-specific-table-columns.ts)
+
+Highlights table headers matched by name list or regex.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `tableName` | string | Target table |
+| `highlightColor` | string | Fill color |
+| `matchType` | "List of column names" \| "RegEx" | Matching mode |
+| `columnNamesArray` | string[] (optional) | Required for list mode |
+| `regexPattern` | string (optional) | Required for regex mode |
+| `regexFlags` | string (optional) | Regex flags |
+
+Example input:
+
+```json
+{
+  "tableName": "Orders",
+  "highlightColor": "#FFC000",
+  "matchType": "List of column names",
+  "columnNamesArray": ["Status", "Priority"]
+}
+```
+
+Example output:
+
+```json
+{
+  "message": "Successfully highlighted matched columns.",
+  "notFoundColumns": []
+}
+```
+
+---
+
+### [Regex Operations](scripts/workbook-independant/regex-operations.ts)
+
+Runs regex match/test/replace/group operations on a string.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `operation` | "all matches" \| "test match" \| "replace" \| "groups" | Operation |
+| `searchString` | string | Input string |
+| `regexPattern` | string | Regex pattern |
+| `regexFlags` | string (optional) | Regex flags |
+| `replaceString` | string (optional) | Replacement text for replace |
+
+Example input:
+
+```json
+{
+  "operation": "replace",
+  "searchString": "Order SO-123",
+  "regexPattern": "SO-(\\d+)",
+  "replaceString": "ID-$1"
+}
+```
+
+Example output:
+
+```json
+"Order ID-123"
+```
+
+---
+
+### [Replace in Sheet](scripts/worksheets/replace-in-sheet.ts)
+
+Replaces all matching values in a worksheet.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `sheetName` | string | Target sheet |
+| `oldValue` | string | Value to find |
+| `newValue` | string | Replacement value |
+| `matchCase` | boolean | Case-sensitive when true |
+| `matchEntireCellContents` | boolean | Whole-cell match only when true |
+
+Example input:
+
+```json
+{
+  "sheetName": "Orders",
+  "oldValue": "Pending",
+  "newValue": "In Progress",
+  "matchCase": false,
+  "matchEntireCellContents": true
+}
+```
+
+---
+
+### [Set Table Rows Height](scripts/tables/set-table-rows-height.ts)
+
+Sets row height for all rows in a table.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `tableName` | string | Target table |
+| `rowHeight` | number (optional) | Height in points |
+
+Example input:
+
+```json
+{
+  "tableName": "Orders",
+  "rowHeight": 18
+}
+```
+
+---
+
+### [Sort Table By Column Name](scripts/tables/sort-table-by-column-name.ts)
+
+Sorts a table ascending by a selected column.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `tableName` | string | Target table |
+| `columnName` | string | Sort key column |
+
+Example input:
+
+```json
+{
+  "tableName": "Orders",
+  "columnName": "OrderDate"
+}
+```
+
+---
+
+### [Update a Row](scripts/tables/update-a-row.ts)
+
+Updates one row identified by a key column value.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `tableName` | string | Target table |
+| `keyColumnName` | string | Lookup column |
+| `keyValue` | string | Lookup value |
+| `updatesJson` | string | JSON object of column:value updates |
+
+Example input:
+
+```json
+{
+  "tableName": "Orders",
+  "keyColumnName": "OrderId",
+  "keyValue": "SO-101",
+  "updatesJson": "{\"Status\":\"Done\",\"Owner\":\"Ops\"}"
+}
+```
+
+Example output:
+
+```json
+{
+  "success": true,
+  "message": "Row updated successfully",
+  "row": 14
+}
+```
