@@ -41,7 +41,12 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for conventions when adding new scripts.
 
 ## Scripts
 
-### [Add Rows To Table](scripts/tables/add-rows-to-table.ts)
+### Tables
+
+<details>
+<summary>Scripts</summary>
+
+#### [Add Rows To Table](scripts/tables/add-rows-to-table.ts)
 
 Adds one or more rows to an existing table from a JSON array.
 
@@ -67,7 +72,7 @@ Example output:
 
 ---
 
-### [Auto Fit Column Widths](scripts/tables/auto-fit-column-widths.ts)
+#### [Auto Fit Column Widths](scripts/tables/auto-fit-column-widths.ts)
 
 Auto-fits all column widths in a table.
 
@@ -85,13 +90,7 @@ Example input:
 
 ---
 
-### [Automatic Calculations](scripts/worksheets/automatic-calculations.ts)
-
-Sets workbook calculation mode to automatic.
-
----
-
-### [Clear Cell Contents](scripts/tables/clear-cell-contents.ts)
+#### [Clear Cell Contents](scripts/tables/clear-cell-contents.ts)
 
 Clears one cell in a table by data-row index and column name.
 
@@ -113,7 +112,7 @@ Example input:
 
 ---
 
-### [Convert Name Cases](scripts/tables/convert-name-cases.ts)
+#### [Convert Name Cases](scripts/tables/convert-name-cases.ts)
 
 Converts all-uppercase/all-lowercase names to Proper Case in selected columns.
 
@@ -133,7 +132,7 @@ Example input:
 
 ---
 
-### [Convert Table Column from Formula to Values](scripts/tables/convert-table-column-from-formula-to-values.ts)
+#### [Convert Table Column from Formula to Values](scripts/tables/convert-table-column-from-formula-to-values.ts)
 
 Converts formulas in a table column to static values.
 
@@ -157,7 +156,7 @@ Example input:
 
 ---
 
-### [Create Pivot Table](scripts/tables/create-pivot-table.ts)
+#### [Create Pivot Table](scripts/tables/create-pivot-table.ts)
 
 Creates a pivot table from a source table.
 
@@ -197,7 +196,7 @@ Example output:
 
 ---
 
-### [Create Table From JSON](scripts/tables/create-table-from-json.ts)
+#### [Create Table From JSON](scripts/tables/create-table-from-json.ts)
 
 Creates a new table from a JSON array on a chosen sheet/cell.
 
@@ -230,74 +229,7 @@ Example output:
 
 ---
 
-### [Delete Sheet](scripts/worksheets/delete-sheet.ts)
-
-Deletes a worksheet.
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `sheetName` | string | Sheet to delete |
-
-Example input:
-
-```json
-{
-  "sheetName": "OldData"
-}
-```
-
----
-
-### [Get Differences Between Arrays](scripts/workbook-independant/get-differences-between-arrays.ts)
-
-Returns objects that are new or changed between two arrays.
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `initialArray` | object[] | Baseline array |
-| `newArray` | object[] | Updated array |
-| `idColName` | string | Identity key name |
-
-Example input:
-
-```json
-{
-  "initialArray": [{"id":"1","status":"New"}],
-  "newArray": [{"id":"1","status":"Done"},{"id":"2","status":"New"}],
-  "idColName": "id"
-}
-```
-
-Example output:
-
-```json
-[
-  {"status":"Done","id":"1"},
-  {"id":"2","status":"New"}
-]
-```
-
----
-
-### [Hide Sheet](scripts/worksheets/hide-sheet.ts)
-
-Hides a worksheet.
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `sheetName` | string | Sheet to hide |
-
-Example input:
-
-```json
-{
-  "sheetName": "RawData"
-}
-```
-
----
-
-### [Highlight Specific Table Columns](scripts/tables/highlight-specific-table-columns.ts)
+#### [Highlight Specific Table Columns](scripts/tables/highlight-specific-table-columns.ts)
 
 Highlights table headers matched by name list or regex.
 
@@ -332,64 +264,7 @@ Example output:
 
 ---
 
-### [Regex Operations](scripts/workbook-independant/regex-operations.ts)
-
-Runs regex match/test/replace/group operations on a string.
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `operation` | "all matches" \| "test match" \| "replace" \| "groups" | Operation |
-| `searchString` | string | Input string |
-| `regexPattern` | string | Regex pattern |
-| `regexFlags` | string (optional) | Regex flags |
-| `replaceString` | string (optional) | Replacement text for replace |
-
-Example input:
-
-```json
-{
-  "operation": "replace",
-  "searchString": "Order SO-123",
-  "regexPattern": "SO-(\\d+)",
-  "replaceString": "ID-$1"
-}
-```
-
-Example output:
-
-```json
-"Order ID-123"
-```
-
----
-
-### [Replace in Sheet](scripts/worksheets/replace-in-sheet.ts)
-
-Replaces all matching values in a worksheet.
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `sheetName` | string | Target sheet |
-| `oldValue` | string | Value to find |
-| `newValue` | string | Replacement value |
-| `matchCase` | boolean | Case-sensitive when true |
-| `matchEntireCellContents` | boolean | Whole-cell match only when true |
-
-Example input:
-
-```json
-{
-  "sheetName": "Orders",
-  "oldValue": "Pending",
-  "newValue": "In Progress",
-  "matchCase": false,
-  "matchEntireCellContents": true
-}
-```
-
----
-
-### [Set Table Rows Height](scripts/tables/set-table-rows-height.ts)
+#### [Set Table Rows Height](scripts/tables/set-table-rows-height.ts)
 
 Sets row height for all rows in a table.
 
@@ -409,7 +284,7 @@ Example input:
 
 ---
 
-### [Sort Table By Column Name](scripts/tables/sort-table-by-column-name.ts)
+#### [Sort Table By Column Name](scripts/tables/sort-table-by-column-name.ts)
 
 Sorts a table ascending by a selected column.
 
@@ -429,7 +304,7 @@ Example input:
 
 ---
 
-### [Update a Row](scripts/tables/update-a-row.ts)
+#### [Update a Row](scripts/tables/update-a-row.ts)
 
 Updates one row identified by a key column value.
 
@@ -460,3 +335,149 @@ Example output:
   "row": 14
 }
 ```
+
+</details>
+
+---
+
+### Worksheets
+
+<details>
+<summary>Scripts</summary>
+
+#### [Automatic Calculations](scripts/worksheets/automatic-calculations.ts)
+
+Sets workbook calculation mode to automatic.
+
+---
+
+#### [Delete Sheet](scripts/worksheets/delete-sheet.ts)
+
+Deletes a worksheet.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `sheetName` | string | Sheet to delete |
+
+Example input:
+
+```json
+{
+  "sheetName": "OldData"
+}
+```
+
+---
+
+#### [Hide Sheet](scripts/worksheets/hide-sheet.ts)
+
+Hides a worksheet.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `sheetName` | string | Sheet to hide |
+
+Example input:
+
+```json
+{
+  "sheetName": "RawData"
+}
+```
+
+---
+
+#### [Replace in Sheet](scripts/worksheets/replace-in-sheet.ts)
+
+Replaces all matching values in a worksheet.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `sheetName` | string | Target sheet |
+| `oldValue` | string | Value to find |
+| `newValue` | string | Replacement value |
+| `matchCase` | boolean | Case-sensitive when true |
+| `matchEntireCellContents` | boolean | Whole-cell match only when true |
+
+Example input:
+
+```json
+{
+  "sheetName": "Orders",
+  "oldValue": "Pending",
+  "newValue": "In Progress",
+  "matchCase": false,
+  "matchEntireCellContents": true
+}
+```
+
+</details>
+
+---
+
+### Workbook-independant
+
+<details>
+<summary>Scripts</summary>
+
+#### [Get Differences Between Arrays](scripts/workbook-independant/get-differences-between-arrays.ts)
+
+Returns objects that are new or changed between two arrays.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `initialArray` | object[] | Baseline array |
+| `newArray` | object[] | Updated array |
+| `idColName` | string | Identity key name |
+
+Example input:
+
+```json
+{
+  "initialArray": [{"id":"1","status":"New"}],
+  "newArray": [{"id":"1","status":"Done"},{"id":"2","status":"New"}],
+  "idColName": "id"
+}
+```
+
+Example output:
+
+```json
+[
+  {"status":"Done","id":"1"},
+  {"id":"2","status":"New"}
+]
+```
+
+---
+
+#### [Regex Operations](scripts/workbook-independant/regex-operations.ts)
+
+Runs regex match/test/replace/group operations on a string.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `operation` | "all matches" \| "test match" \| "replace" \| "groups" | Operation |
+| `searchString` | string | Input string |
+| `regexPattern` | string | Regex pattern |
+| `regexFlags` | string (optional) | Regex flags |
+| `replaceString` | string (optional) | Replacement text for replace |
+
+Example input:
+
+```json
+{
+  "operation": "replace",
+  "searchString": "Order SO-123",
+  "regexPattern": "SO-(\\d+)",
+  "replaceString": "ID-$1"
+}
+```
+
+Example output:
+
+```json
+"Order ID-123"
+```
+
+</details>

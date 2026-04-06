@@ -44,10 +44,10 @@ function main(
 
 ### README entry
 
-After adding a script, add a section to [README.md](README.md) under the correct alphabetical position:
+After adding a script, update [README.md](README.md) to add a new entry under the corresponding folder section, in alphabetical order. Make sure to use `####` (h4) for script headings so they nest properly under the folder group headers.
 
 ```markdown
-### [Script Name](scripts/<folder>/script-name.ts)
+#### [Script Name](scripts/<folder>/script-name.ts)
 
 One-line description.
 
