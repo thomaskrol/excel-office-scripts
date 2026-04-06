@@ -10,8 +10,8 @@
  */
 function main(
   workbook: ExcelScript.Workbook,
-  initialArray: Array<object>,
-  newArray: Array<object>,
+  initialArray: Record<string, string>[],
+  newArray: Record<string, string>[],
   idColName: string
 ): {}[] {
   const output: { [key: string]: string }[] = [];

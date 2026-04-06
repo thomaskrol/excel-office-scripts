@@ -8,7 +8,7 @@
 function main(
   workbook: ExcelScript.Workbook,
   tableName: string,
-  columnsToFix: string[];
+  columnsToFix: string[]
 ) {
   const table = workbook.getTable(tableName);
   if (!table) {
@@ -17,12 +17,16 @@ function main(
 
   // Process each column
   columnsToFix.forEach(columnName => {
-    let column = table.getColumnByName(columnName);
+    const column = table.getColumnByName(columnName);
+    if (!column) {
+      throw new Error(`Input key "${columnName}" does not match any column in the table "${tableName}".`);
+    }
+
     let values = column.getRange().getValues();
 
     // Loop through each row in the column
     for (let i = 0; i < values.length; i++) {
-      let cellValue = values[i][0];
+      const cellValue = values[i][0];
       if (typeof cellValue !== "string" || cellValue.trim() === "") {
         continue;
       }
@@ -30,9 +34,9 @@ function main(
       // Check if the value is all uppercase or all lowercase
       if (cellValue === cellValue.toUpperCase() || cellValue === cellValue.toLowerCase()) {
         // Convert to Proper Case while handling accents
-        let properCaseValue = cellValue.toLowerCase().replace(
+        const properCaseValue = cellValue.toLowerCase().replace(
           /(^|\\s)([a-záéíóúüñâàäêëîïôöûüç])/g,
-          (_, boundary, letter) => boundary + letter.toUpperCase();
+          (_, boundary, letter) => boundary + letter.toUpperCase()
         );
 
         // Update the value in the array

@@ -15,7 +15,7 @@ function main(
   matchCase: boolean = false,
   matchEntireCellContents: boolean = false
 ) {
-  const sheet: ExcelScript.Worksheet = workbook.getWorksheet(sheetName);
+  const sheet = workbook.getWorksheet(sheetName);
   if (!sheet) {
     throw new Error(`Worksheet "${sheetName}" not found.`);
   }

@@ -64,17 +64,17 @@ function main(
 
   // Update each specified column
   let rowCell: ExcelScript.Range
-  for (const [column, value] of Object.entries(updates)) {
-    const colIndex = table.getColumnByName(column).getIndex();
+  for (const [colName, value] of Object.entries(updates)) {
+    const column = table.getColumnByName(colName);
 
-    if (colIndex === -1) {
+    if (!column) {
       return {
         success: false,
         message: `Column "${keyColumnName}" not found`
       }
     }
 
-    rowCell = table.getColumnByName(column).getRangeBetweenHeaderAndTotal().getCell(targetRowIndex, 0);
+    rowCell = column.getRangeBetweenHeaderAndTotal().getCell(targetRowIndex, 0);
     rowCell.setValue(value);
   }
 
