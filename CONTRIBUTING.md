@@ -46,7 +46,9 @@ function main(
 
 After adding a script, update [README.md](README.md) to add a new entry under the corresponding folder section, in alphabetical order. Make sure to use `####` (h4) for script headings so they nest properly under the folder group headers.
 
-```markdown
+~~~markdown
+---
+
 #### [Script Name](scripts/<folder>/script-name.ts)
 
 One-line description.
@@ -57,15 +59,13 @@ One-line description.
 
 Example input:
 
-\`\`\`json
+```json
 { "param": "value" }
-\`\`\`
+```
 
 Example output:
 
-\`\`\`json
+```json
 { "message": "..." }
-\`\`\`
-
----
 ```
+~~~
