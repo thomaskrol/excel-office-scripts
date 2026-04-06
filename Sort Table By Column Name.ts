@@ -1,3 +1,9 @@
+/**
+ * Sorts a table in ascending order by the specified column.
+ *
+ * @param tableName Name of the table to sort.
+ * @param columnName Name of the column to sort by.
+ */
 function main(
   workbook: ExcelScript.Workbook,
   tableName: string,

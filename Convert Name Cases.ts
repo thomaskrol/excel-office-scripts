@@ -1,3 +1,10 @@
+/**
+ * Converts values in specified table columns to Proper Case if they are entirely uppercase or entirely lowercase.
+ * Handles accented characters common in European names.
+ *
+ * @param tableName Name of the table to process.
+ * @param columnsToFix Array of column names whose values should be converted to Proper Case.
+ */
 function main(
   workbook: ExcelScript.Workbook,
   tableName: string,

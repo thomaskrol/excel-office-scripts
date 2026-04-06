@@ -1,3 +1,10 @@
+/**
+ * Clears the contents of a specific cell in a table by column name and row index.
+ *
+ * @param tableName Name of the table containing the cell.
+ * @param columnName Name of the column containing the cell.
+ * @param rowIndex Zero-based row index within the table's data range (excluding the header row).
+ */
 function main(
   workbook: ExcelScript.Workbook,
   tableName: string,

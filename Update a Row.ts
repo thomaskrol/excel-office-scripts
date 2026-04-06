@@ -1,3 +1,12 @@
+/**
+ * Updates one or more column values in a table row identified by a key column value.
+ * Returns the Excel row number of the updated row on success.
+ *
+ * @param tableName Name of the table containing the row to update.
+ * @param keyColumnName Name of the column used to identify the target row.
+ * @param keyValue The value in the key column that identifies the row to update.
+ * @param updatesJson JSON string of column-name-to-value mappings to apply (e.g. {"Status": "Done", "Count": 5}).
+ */
 function main(
   workbook: ExcelScript.Workbook,
   tableName: string,

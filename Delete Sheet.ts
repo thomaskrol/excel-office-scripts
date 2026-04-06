@@ -1,3 +1,8 @@
+/**
+ * Permanently deletes a worksheet from the workbook.
+ *
+ * @param sheetName Name of the worksheet to delete.
+ */
 function main(
   workbook: ExcelScript.Workbook,
   sheetName: string

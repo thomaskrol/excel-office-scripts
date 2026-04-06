@@ -1,3 +1,8 @@
+/**
+ * Auto-fits the column widths for all columns in a table to best fit their contents.
+ *
+ * @param tableName Name of the table to auto-fit columns for.
+ */
 function main(
   workbook: ExcelScript.Workbook,
   tableName: string

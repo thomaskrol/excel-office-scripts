@@ -1,3 +1,12 @@
+/**
+ * Converts a table column's formulas to static values by copying the range as values-only.
+ * Clears any active filters before converting to ensure all rows are affected.
+ *
+ * @param tableName Name of the table containing the column.
+ * @param columnName Name of the column to convert.
+ * @param fullColumn If true, converts the entire column. If false, only the last n rows are converted.
+ * @param numberOfRowsFromEnd Number of rows from the end of the column to convert (required when fullColumn is false).
+ */
 function main(
   workbook: ExcelScript.Workbook,
   tableName: string,

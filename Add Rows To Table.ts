@@ -1,3 +1,10 @@
+/**
+ * Adds one or more rows to an Excel table from a JSON array.
+ * Columns not present in the input JSON will be left empty for that row.
+ *
+ * @param tableName Name of the table to add rows to.
+ * @param inputJson JSON string containing an array of objects where keys match table column names.
+ */
 function main(
   workbook: ExcelScript.Workbook,
   tableName: string,

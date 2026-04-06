@@ -1,3 +1,12 @@
+/**
+ * Replaces all occurrences of a value in a worksheet with a new value.
+ *
+ * @param sheetName Name of the worksheet to perform replacements in.
+ * @param oldValue The value to search for.
+ * @param newValue The value to replace matches with.
+ * @param matchCase Whether the search should be case-sensitive (defaults to false).
+ * @param matchEntireCellContents Whether to match only cells whose entire contents equal oldValue (defaults to false).
+ */
 function main(
   workbook: ExcelScript.Workbook,
   sheetName: string,

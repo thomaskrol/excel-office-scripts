@@ -1,3 +1,8 @@
+/**
+ * Hides a worksheet in the workbook.
+ *
+ * @param sheetName Name of the worksheet to hide.
+ */
 function main(
   workbook: ExcelScript.Workbook,
   sheetName: string
