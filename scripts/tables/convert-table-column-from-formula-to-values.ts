@@ -14,31 +14,30 @@ function main(
   fullColumn: boolean = false,
   numberOfRowsFromEnd?: number
 ) {
-  if (!fullColumn && !numberOfRowsFromEnd) {
-    throw new Error(`Parameter "numberOfRowsFromEnd" is required when fullColumn is set to false.`);
-  }
-
   const table = workbook.getTable(tableName);
   if (!table) {
-    throw new Error(`Table "${tableName}" not found.`);
+    throw new Error(`Table '${tableName}' not found.`);
   }
 
   const column = table.getColumnByName(columnName);
   if (!column) {
-    throw new Error(`Column "${columnName}" not found.`);
+    throw new Error(`Column '${columnName}' not found.`);
   }
 
   // clear filters so following actions are not impacted
   table.getAutoFilter().clearCriteria();
 
   const totalColRange = column.getRangeBetweenHeaderAndTotal();
+
   let range: ExcelScript.Range;
   if (fullColumn) {
     range = totalColRange;
+
   } else if (numberOfRowsFromEnd) {
     range = totalColRange.getLastCell().getOffsetRange(1 - numberOfRowsFromEnd, 0).getAbsoluteResizedRange(numberOfRowsFromEnd, 1);
+
   } else {
-    throw new Error(`numberOfRowsFromEnd required when fullColumn is false.`);
+    throw new Error(`Parameter 'numberOfRowsFromEnd' is required when fullColumn is set to false.`);
   }
 
   range.copyFrom(

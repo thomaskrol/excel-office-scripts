@@ -1,14 +1,14 @@
 /**
-  * Creates a pivot table from an existing table with specified row and value aggregations.
-  *
-  * @param tableName Name of the source table for the pivot table.
-  * @param location Where to place the pivot table: "New sheet" creates a new worksheet, "Existing sheet" places it below the source table unless a sheet name is specified.
-  * @param rowsColumn Column name to use for pivot table rows.
-  * @param valuesColumns Array of column names to aggregate in the pivot table values area.
-  * @param valuesOperation Aggregation function to apply to the values columns.
-  * @param sheetName The name of the sheet the pivot table should be placed on when location is Existing sheet (defaults to same sheet as table). If location is New sheet, this is the name the new sheet should have.
-  * @param pivotTableName Optional name for the pivot table (auto-generates if blank or already exists);
-  */
+ * Creates a pivot table from an existing table with specified row and value aggregations.
+ * 
+ * @param tableName Name of the source table for the pivot table.
+ * @param location Where to place the pivot table: "New sheet" creates a new worksheet, "Existing sheet" places it below the source table unless a sheet name is specified.
+ * @param rowsColumn Column name to use for pivot table rows.
+ * @param valuesColumns Array of column names to aggregate in the pivot table values area.
+ * @param valuesOperation Aggregation function to apply to the values columns.
+ * @param sheetName The name of the sheet the pivot table should be placed on when location is Existing sheet (defaults to same sheet as table). If location is New sheet, this is the name the new sheet should have.
+ * @param pivotTableName Optional name for the pivot table (auto-generates if blank or already exists)
+ */
 function main(
   workbook: ExcelScript.Workbook,
   tableName: string,
@@ -22,22 +22,22 @@ function main(
 ) {
   const table = workbook.getTable(tableName);
   if (!table) {
-    throw new Error(`Table "${tableName}" not found.`);
+    throw new Error(`Table '${tableName}' not found.`);
   }
 
   if (table.getRowCount() === 0) {
-    throw new Error(`Table "${tableName}" has no data.`);
+    throw new Error(`Table '${tableName}' has no data.`);
   }
 
   // make sure specified columns exist
   const tableCols = table.getColumns().map((col) => col.getName());
-  let missingColumn: string;
   if (!tableCols.includes(rowsColumn)) {
-    throw new Error(`There is no column "${rowsColumn}" in table "${tableName}".`);
-  } else {
+    throw new Error(`There is no column '${rowsColumn}' in table '${tableName}'.`);
+  }
+  else {
     valuesColumns.forEach((colName) => {
       if (!tableCols.includes(colName)) {
-        throw new Error(`There is no column "${colName}" in table "${tableName}".`);
+        throw new Error(`There is no column '${colName}' in table '${tableName}'.`);
       }
     });
   }
@@ -89,7 +89,6 @@ function main(
     pivotTableName = defaultName + i;
   }
 
-  // create pivot table
   const pivotTable = workbook.addPivotTable(pivotTableName, table, locationRange);
 
   // add rows field to pivot table

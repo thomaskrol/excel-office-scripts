@@ -19,7 +19,7 @@ function main(
   columnsToFix.forEach(columnName => {
     const column = table.getColumnByName(columnName);
     if (!column) {
-      throw new Error(`Input key "${columnName}" does not match any column in the table "${tableName}".`);
+      throw new Error(`Input key '${columnName}' does not match any column in the table '${tableName}'.`);
     }
 
     let values = column.getRange().getValues();
@@ -35,12 +35,12 @@ function main(
       if (cellValue === cellValue.toUpperCase() || cellValue === cellValue.toLowerCase()) {
         // Convert to Proper Case while handling accents
         const properCaseValue = cellValue.toLowerCase().replace(
-          /(^|\\s)([a-záéíóúüñâàäêëîïôöûüç])/g,
+          /(^|\s)([a-záéíóúüñâàäêëîïôöûüç])/g,
           (_, boundary, letter) => boundary + letter.toUpperCase()
         );
 
         // Update the value in the array
-        values[i][0] = properCaseValue
+        values[i][0] = properCaseValue;
       }
     }
 

@@ -11,14 +11,15 @@ function main(
 ) {
   const table = workbook.getTable(tableName);
   if (!table) {
-    throw new Error(`Table "${tableName}" not found.`);
+    throw new Error(`Table '${tableName}' not found.`);
   }
 
   // Get the column index based on the column name
   const columnIndex = table.getHeaderRowRange().getValues()[0].indexOf(columnName);
-  if (columnIndex !== -1) {
-    table.getSort().apply([{ key: columnIndex, ascending: true }]);
-  } else {
-    throw new Error(`Column "${columnName}" not found.`);
+
+  if (columnIndex === -1) {
+    throw new Error(`Column '${columnName}' not found.`);
   }
+
+  table.getSort().apply([{ key: columnIndex, ascending: true }]);
 }

@@ -21,18 +21,18 @@ function main(
   switch (matchType) {
     case "List of column names": {
       if (!columnNamesArray) {
-        throw new Error(`Parameter columnNamesArray is required when matchType is "List of column names".`);
+        throw new Error("Parameter columnNamesArray is required when matchType is 'List of column names'.");
       }
       break;
     }
     case "RegEx": {
       if (!regexPattern) {
-        throw new Error(`Parameter regexPattern is required when matchType is "RegEx".`);
+        throw new Error("Parameter regexPattern is required when matchType is 'RegEx'.");
       }
       break;
     }
     default: {
-      throw new Error(`Parameter matchType has an unrecognised value. Valid values are "List of column names" and "RegEx".`);
+      throw new Error("Parameter matchType has an unrecognised value. Valid values are 'List of column names' and 'RegEx'.");
     }
   }
 
@@ -48,7 +48,7 @@ function main(
 
   const table = workbook.getTable(tableName);
   if (!table) {
-    throw new Error(`Table "${tableName}" not found.`);
+    throw new Error(`Table '${tableName}' not found.`);
   }
 
   const tableCols = table.getColumns();
@@ -78,14 +78,16 @@ function main(
   if (matchType === "List of column names") {
     const highlightedColNames = colsToHighlight.map((col) => col.getName());
     const missingCols = columnNamesArray.filter((name) => {
-      return !highlightedColNames.includes(name);
+      return !highlightedColNames.includes(name)
     });
 
     return {
-      "message": "Successfully highlighted matched columns.", "notFoundColumns": missingCols || []
-    };
+      "message": "Successfully highlighted matched columns.",
+      "notFoundColumns": missingCols || []
+    }
   }
+
   return {
     "message": "Successfully highlighted matched columns."
-  };
+  }
 }

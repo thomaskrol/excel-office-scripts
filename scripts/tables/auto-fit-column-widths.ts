@@ -9,7 +9,7 @@ function main(
 ) {
   const table = workbook.getTable(tableName);
   if (!table) {
-    throw new Error(`Table "${tableName}" not found.`);
+    throw new Error(`Table '${tableName}' not found.`);
   }
 
   table.getRange().getFormat().autofitColumns();

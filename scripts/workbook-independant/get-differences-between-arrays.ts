@@ -10,8 +10,8 @@
  */
 function main(
   workbook: ExcelScript.Workbook,
-  initialArray: Record<string, string>[],
-  newArray: Record<string, string>[],
+  initialArray: Array<object>,
+  newArray: Array<object>,
   idColName: string
 ): {}[] {
   const output: { [key: string]: string }[] = [];
@@ -30,18 +30,18 @@ function main(
     const diff: { [key: string]: string } = {};
 
     for (const key of Object.keys(newObj)) {
-      if (key === idColName) continue;
+      if (key === idColName) continue; // id is always added if there are changes
 
-      // id is always added if there are changes
       const newVal: string = newObj[key];
       const oldVal: string = initialObj[key];
+
       if (newVal !== oldVal) {
-        diff[key] = newVal
+        diff[key] = newVal;
       }
     }
 
     if (Object.keys(diff).length > 0) {
-      diff[idColName] = id
+      diff[idColName] = id;
       output.push({ ...diff });
     }
   }

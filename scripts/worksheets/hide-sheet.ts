@@ -9,9 +9,8 @@ function main(
 ) {
   const sheet = workbook.getWorksheet(sheetName);
   if (!sheet) {
-    throw new Error(`Worksheet "${sheetName}" not found.`);
+    throw new Error(`Worksheet '${sheetName}' not found.`);
   }
 
-  // Set sheet visibility to hidden
   sheet.setVisibility(ExcelScript.SheetVisibility.hidden);
 }

@@ -17,7 +17,7 @@ function main(
 ) {
   const sheet = workbook.getWorksheet(sheetName);
   if (!sheet) {
-    throw new Error(`Worksheet "${sheetName}" not found.`);
+    throw new Error(`Worksheet '${sheetName}' not found.`);
   }
 
   sheet.replaceAll(oldValue, newValue, { matchCase: matchCase, completeMatch: matchEntireCellContents });

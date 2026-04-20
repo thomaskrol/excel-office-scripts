@@ -9,7 +9,7 @@ function main(
 ) {
   const sheet = workbook.getWorksheet(sheetName);
   if (!sheet) {
-    throw new Error(`Worksheet ${sheetName} not found.`);
+    throw new Error(`Worksheet '${sheetName}' not found.`);
   }
 
   sheet.delete();
