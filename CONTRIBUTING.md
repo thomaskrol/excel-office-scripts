@@ -2,15 +2,26 @@
 
 ## Adding a new script
 
-### Folder placement
+### Folder and file placement
+
+Each script lives in its own subfolder named after the script file:
+
+```
+scripts/<category>/<script-name>/<script-name>.ts
+```
+
+Choose the category based on what the script targets:
 
 - `scripts/tables/`: operations that target a named table
 - `scripts/worksheets/`: operations that target a sheet or the workbook
 - `scripts/workbook-independant/`: pure utility logic that does not interact with a workbook
 
+The `.osts` file alongside the `.ts` is generated automatically by CI — do not create or edit it manually.
+
 ### File naming
 
 - kebab-case, action-oriented: `verb-noun.ts` (e.g. `update-a-row.ts`)
+- The folder name and the `.ts` filename must match (e.g. `scripts/tables/update-a-row/update-a-row.ts`)
 - Match the README heading in title case
 
 ### Script skeleton
@@ -44,12 +55,12 @@ function main(
 
 ### README entry
 
-After adding a script, update [README.md](README.md) to add a new entry under the corresponding folder section, in alphabetical order. Make sure to use `####` (h4) for script headings so they nest properly under the folder group headers.
+After adding a script, update [README.md](README.md) to add a new entry under the corresponding category section, in alphabetical order. Use `####` (h4) for the script heading so it nests correctly under the category group.
 
 ~~~markdown
 ---
 
-#### [Script Name](scripts/<folder>/script-name.ts)
+#### [Script Name](scripts/<category>/<script-name>/<script-name>.ts)
 
 One-line description.
 

@@ -31,9 +31,24 @@ Script outputs can be read in later flow actions using `outputs('Run_script')?['
 
 ## Repository Layout
 
-- `scripts/tables`: table-focused Office Scripts
-- `scripts/worksheets`: worksheet/workbook scripts
-- `scripts/workbook-independant`: utility scripts that do not require table/sheet context
+Scripts are grouped by category, and each script lives in its own subfolder containing the source `.ts` file and the generated `.osts` file:
+
+```
+scripts/
+  tables/
+    add-rows-to-table/
+      add-rows-to-table.ts
+      add-rows-to-table.osts
+    ...
+  worksheets/
+  workbook-independant/
+```
+
+- `scripts/tables/`: table-focused Office Scripts
+- `scripts/worksheets/`: worksheet/workbook scripts
+- `scripts/workbook-independant/`: utility scripts that do not require table/sheet context
+
+The `.osts` files are generated automatically by a GitHub Actions workflow on every push to `main`. Do not edit them by hand.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for conventions when adding new scripts.
 
@@ -46,7 +61,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for conventions when adding new scripts.
 <details>
 <summary>Scripts</summary>
 
-#### [Add Rows To Table](scripts/tables/add-rows-to-table.ts)
+#### [Add Rows To Table](scripts/tables/add-rows-to-table/add-rows-to-table.ts)
 
 Adds one or more rows to an existing table from a JSON array.
 
@@ -72,7 +87,7 @@ Example output:
 
 ---
 
-#### [Auto Fit Column Widths](scripts/tables/auto-fit-column-widths.ts)
+#### [Auto Fit Column Widths](scripts/tables/auto-fit-column-widths/auto-fit-column-widths.ts)
 
 Auto-fits all column widths in a table.
 
@@ -90,7 +105,7 @@ Example input:
 
 ---
 
-#### [Clear Cell Contents](scripts/tables/clear-cell-contents.ts)
+#### [Clear Cell Contents](scripts/tables/clear-cell-contents/clear-cell-contents.ts)
 
 Clears one cell in a table by data-row index and column name.
 
@@ -112,7 +127,7 @@ Example input:
 
 ---
 
-#### [Convert Name Cases](scripts/tables/convert-name-cases.ts)
+#### [Convert Name Cases](scripts/tables/convert-name-cases/convert-name-cases.ts)
 
 Converts all-uppercase/all-lowercase names to Proper Case in selected columns.
 
@@ -132,7 +147,7 @@ Example input:
 
 ---
 
-#### [Convert Table Column from Formula to Values](scripts/tables/convert-table-column-from-formula-to-values.ts)
+#### [Convert Table Column from Formula to Values](scripts/tables/convert-table-column-from-formula-to-values/convert-table-column-from-formula-to-values.ts)
 
 Converts formulas in a table column to static values.
 
@@ -156,7 +171,7 @@ Example input:
 
 ---
 
-#### [Create Pivot Table](scripts/tables/create-pivot-table.ts)
+#### [Create Pivot Table](scripts/tables/create-pivot-table/create-pivot-table.ts)
 
 Creates a pivot table from a source table.
 
@@ -196,7 +211,7 @@ Example output:
 
 ---
 
-#### [Create Table From JSON](scripts/tables/create-table-from-json.ts)
+#### [Create Table From JSON](scripts/tables/create-table-from-json/create-table-from-json.ts)
 
 Creates a new table from a JSON array on a chosen sheet/cell.
 
@@ -229,7 +244,7 @@ Example output:
 
 ---
 
-#### [Highlight Specific Table Columns](scripts/tables/highlight-specific-table-columns.ts)
+#### [Highlight Specific Table Columns](scripts/tables/highlight-specific-table-columns/highlight-specific-table-columns.ts)
 
 Highlights table headers matched by name list or regex.
 
@@ -264,7 +279,7 @@ Example output:
 
 ---
 
-#### [Set Table Rows Height](scripts/tables/set-table-rows-height.ts)
+#### [Set Table Rows Height](scripts/tables/set-table-rows-height/set-table-rows-height.ts)
 
 Sets row height for all rows in a table.
 
@@ -284,7 +299,7 @@ Example input:
 
 ---
 
-#### [Sort Table By Column Name](scripts/tables/sort-table-by-column-name.ts)
+#### [Sort Table By Column Name](scripts/tables/sort-table-by-column-name/sort-table-by-column-name.ts)
 
 Sorts a table ascending by a selected column.
 
@@ -304,7 +319,7 @@ Example input:
 
 ---
 
-#### [Update a Row](scripts/tables/update-a-row.ts)
+#### [Update a Row](scripts/tables/update-a-row/update-a-row.ts)
 
 Updates one row identified by a key column value.
 
@@ -345,13 +360,7 @@ Example output:
 <details>
 <summary>Scripts</summary>
 
-#### [Automatic Calculations](scripts/worksheets/automatic-calculations.ts)
-
-Sets workbook calculation mode to automatic.
-
----
-
-#### [Delete Sheet](scripts/worksheets/delete-sheet.ts)
+#### [Delete Sheet](scripts/worksheets/delete-sheet/delete-sheet.ts)
 
 Deletes a worksheet.
 
@@ -369,7 +378,7 @@ Example input:
 
 ---
 
-#### [Hide Sheet](scripts/worksheets/hide-sheet.ts)
+#### [Hide Sheet](scripts/worksheets/hide-sheet/hide-sheet.ts)
 
 Hides a worksheet.
 
@@ -387,7 +396,7 @@ Example input:
 
 ---
 
-#### [Replace in Sheet](scripts/worksheets/replace-in-sheet.ts)
+#### [Replace in Sheet](scripts/worksheets/replace-in-sheet/replace-in-sheet.ts)
 
 Replaces all matching values in a worksheet.
 
@@ -420,7 +429,7 @@ Example input:
 <details>
 <summary>Scripts</summary>
 
-#### [Get Differences Between Arrays](scripts/workbook-independant/get-differences-between-arrays.ts)
+#### [Get Differences Between Arrays](scripts/workbook-independant/get-differences-between-arrays/get-differences-between-arrays.ts)
 
 Returns objects that are new or changed between two arrays.
 
@@ -451,7 +460,7 @@ Example output:
 
 ---
 
-#### [Regex Operations](scripts/workbook-independant/regex-operations.ts)
+#### [Regex Operations](scripts/workbook-independant/regex-operations/regex-operations.ts)
 
 Runs regex match/test/replace/group operations on a string.
 
