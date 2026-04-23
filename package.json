@@ -1,0 +1,11 @@
+{
+  "name": "excel-office-scripts",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "convert": "bun convert-to-osts.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}

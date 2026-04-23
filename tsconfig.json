@@ -6,7 +6,8 @@
     ],
     "noEmit": true,
     "typeRoots": [
-      "@types/office-scripts"
+      "@types/office-scripts",
+      "node_modules/@types"
     ]
   }
 }
