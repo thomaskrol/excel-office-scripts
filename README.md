@@ -20,12 +20,12 @@ Script outputs can be read in later flow actions using `outputs('Run_script')?['
 
 ### Troubleshooting
 
-| Symptom | Likely cause |
-| --- | --- |
-| `Table "..." not found` | Table name mismatch, check exact casing and spacing |
-| `Column "..." not found` | Column name mismatch or table schema has changed |
-| JSON parse error | Malformed string passed to a JSON parameter, validate with a Compose action first |
-| Script runs but nothing changes | Active filter hiding rows, wrong key value, or wrong sheet context |
+| Symptom                         | Likely cause                                                                      |
+| ------------------------------- | --------------------------------------------------------------------------------- |
+| `Table "..." not found`         | Table name mismatch, check exact casing and spacing                               |
+| `Column "..." not found`        | Column name mismatch or table schema has changed                                  |
+| JSON parse error                | Malformed string passed to a JSON parameter, validate with a Compose action first |
+| Script runs but nothing changes | Active filter hiding rows, wrong key value, or wrong sheet context                |
 
 ---
 
@@ -65,9 +65,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for conventions when adding new scripts.
 
 Adds one or more rows to an existing table from a JSON array.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `tableName` | string | Target table name |
+| Parameter   | Type   | Description                               |
+| ----------- | ------ | ----------------------------------------- |
+| `tableName` | string | Target table name                         |
 | `inputJson` | string | JSON array whose keys match table columns |
 
 Example input:
@@ -91,8 +91,8 @@ Example output:
 
 Auto-fits all column widths in a table.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
+| Parameter   | Type   | Description       |
+| ----------- | ------ | ----------------- |
 | `tableName` | string | Target table name |
 
 Example input:
@@ -109,11 +109,11 @@ Example input:
 
 Clears one cell in a table by data-row index and column name.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `tableName` | string | Target table name |
-| `columnName` | string | Target column name |
-| `rowIndex` | number | Zero-based data row index |
+| Parameter    | Type   | Description               |
+| ------------ | ------ | ------------------------- |
+| `tableName`  | string | Target table name         |
+| `columnName` | string | Target column name        |
+| `rowIndex`   | number | Zero-based data row index |
 
 Example input:
 
@@ -131,9 +131,9 @@ Example input:
 
 Converts all-uppercase/all-lowercase names to Proper Case in selected columns.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `tableName` | string | Target table name |
+| Parameter      | Type     | Description          |
+| -------------- | -------- | -------------------- |
+| `tableName`    | string   | Target table name    |
 | `columnsToFix` | string[] | Columns to normalize |
 
 Example input:
@@ -151,11 +151,11 @@ Example input:
 
 Converts formulas in a table column to static values.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `tableName` | string | Target table name |
-| `columnName` | string | Column to convert |
-| `fullColumn` | boolean | Convert all rows when true |
+| Parameter             | Type              | Description                         |
+| --------------------- | ----------------- | ----------------------------------- |
+| `tableName`           | string            | Target table name                   |
+| `columnName`          | string            | Column to convert                   |
+| `fullColumn`          | boolean           | Convert all rows when true          |
 | `numberOfRowsFromEnd` | number (optional) | Required when `fullColumn` is false |
 
 Example input:
@@ -175,16 +175,16 @@ Example input:
 
 Creates a pivot table from a source table.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `tableName` | string | Source table |
-| `location` | "New sheet" \| "Existing sheet" | Placement |
-| `rowsColumn` | string | Row grouping column |
-| `valuesColumns` | string[] | Value columns |
-| `valuesOperation` | "Sum" \| "Count" \| "Average" \| "Product" \| "Max" \| "Min" | Aggregation |
-| `columnsColumn` | string (optional) | Column grouping |
-| `sheetName` | string (optional) | Target sheet |
-| `pivotTableName` | string (optional) | Pivot table name |
+| Parameter         | Type                                                         | Description         |
+| ----------------- | ------------------------------------------------------------ | ------------------- |
+| `tableName`       | string                                                       | Source table        |
+| `location`        | "New sheet" \| "Existing sheet"                              | Placement           |
+| `rowsColumn`      | string                                                       | Row grouping column |
+| `valuesColumns`   | string[]                                                     | Value columns       |
+| `valuesOperation` | "Sum" \| "Count" \| "Average" \| "Product" \| "Max" \| "Min" | Aggregation         |
+| `columnsColumn`   | string (optional)                                            | Column grouping     |
+| `sheetName`       | string (optional)                                            | Target sheet        |
+| `pivotTableName`  | string (optional)                                            | Pivot table name    |
 
 Example input:
 
@@ -215,12 +215,12 @@ Example output:
 
 Creates a new table from a JSON array on a chosen sheet/cell.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `sheetName` | string | Destination worksheet |
-| `startCell` | string | Top-left table cell (for example A1) |
-| `inputJson` | string | JSON array of objects |
-| `tableName` | string (optional) | Name for created table |
+| Parameter   | Type              | Description                          |
+| ----------- | ----------------- | ------------------------------------ |
+| `sheetName` | string            | Destination worksheet                |
+| `startCell` | string            | Top-left table cell (for example A1) |
+| `inputJson` | string            | JSON array of objects                |
+| `tableName` | string (optional) | Name for created table               |
 
 Example input:
 
@@ -248,14 +248,14 @@ Example output:
 
 Highlights table headers matched by name list or regex.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `tableName` | string | Target table |
-| `highlightColor` | string | Fill color |
-| `matchType` | "List of column names" \| "RegEx" | Matching mode |
-| `columnNamesArray` | string[] (optional) | Required for list mode |
-| `regexPattern` | string (optional) | Required for regex mode |
-| `regexFlags` | string (optional) | Regex flags |
+| Parameter          | Type                              | Description             |
+| ------------------ | --------------------------------- | ----------------------- |
+| `tableName`        | string                            | Target table            |
+| `highlightColor`   | string                            | Fill color              |
+| `matchType`        | "List of column names" \| "RegEx" | Matching mode           |
+| `columnNamesArray` | string[] (optional)               | Required for list mode  |
+| `regexPattern`     | string (optional)                 | Required for regex mode |
+| `regexFlags`       | string (optional)                 | Regex flags             |
 
 Example input:
 
@@ -283,9 +283,9 @@ Example output:
 
 Sets row height for all rows in a table.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `tableName` | string | Target table |
+| Parameter   | Type              | Description      |
+| ----------- | ----------------- | ---------------- |
+| `tableName` | string            | Target table     |
 | `rowHeight` | number (optional) | Height in points |
 
 Example input:
@@ -303,9 +303,9 @@ Example input:
 
 Sorts a table ascending by a selected column.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `tableName` | string | Target table |
+| Parameter    | Type   | Description     |
+| ------------ | ------ | --------------- |
+| `tableName`  | string | Target table    |
 | `columnName` | string | Sort key column |
 
 Example input:
@@ -323,12 +323,12 @@ Example input:
 
 Updates one row identified by a key column value.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `tableName` | string | Target table |
-| `keyColumnName` | string | Lookup column |
-| `keyValue` | string | Lookup value |
-| `updatesJson` | string | JSON object of column:value updates |
+| Parameter       | Type   | Description                         |
+| --------------- | ------ | ----------------------------------- |
+| `tableName`     | string | Target table                        |
+| `keyColumnName` | string | Lookup column                       |
+| `keyValue`      | string | Lookup value                        |
+| `updatesJson`   | string | JSON object of column:value updates |
 
 Example input:
 
@@ -364,8 +364,8 @@ Example output:
 
 Deletes a worksheet.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
+| Parameter   | Type   | Description     |
+| ----------- | ------ | --------------- |
 | `sheetName` | string | Sheet to delete |
 
 Example input:
@@ -382,8 +382,8 @@ Example input:
 
 Hides a worksheet.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
+| Parameter   | Type   | Description   |
+| ----------- | ------ | ------------- |
 | `sheetName` | string | Sheet to hide |
 
 Example input:
@@ -400,12 +400,12 @@ Example input:
 
 Replaces all matching values in a worksheet.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `sheetName` | string | Target sheet |
-| `oldValue` | string | Value to find |
-| `newValue` | string | Replacement value |
-| `matchCase` | boolean | Case-sensitive when true |
+| Parameter                 | Type    | Description                     |
+| ------------------------- | ------- | ------------------------------- |
+| `sheetName`               | string  | Target sheet                    |
+| `oldValue`                | string  | Value to find                   |
+| `newValue`                | string  | Replacement value               |
+| `matchCase`               | boolean | Case-sensitive when true        |
 | `matchEntireCellContents` | boolean | Whole-cell match only when true |
 
 Example input:
@@ -433,11 +433,11 @@ Example input:
 
 Returns objects that are new or changed between two arrays.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `initialArray` | object[] | Baseline array |
-| `newArray` | object[] | Updated array |
-| `idColName` | string | Identity key name |
+| Parameter      | Type     | Description       |
+| -------------- | -------- | ----------------- |
+| `initialArray` | object[] | Baseline array    |
+| `newArray`     | object[] | Updated array     |
+| `idColName`    | string   | Identity key name |
 
 Example input:
 
@@ -464,13 +464,13 @@ Example output:
 
 Runs regex match/test/replace/group operations on a string.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `operation` | "all matches" \| "test match" \| "replace" \| "groups" | Operation |
-| `searchString` | string | Input string |
-| `regexPattern` | string | Regex pattern |
-| `regexFlags` | string (optional) | Regex flags |
-| `replaceString` | string (optional) | Replacement text for replace |
+| Parameter       | Type                                                   | Description                  |
+| --------------- | ------------------------------------------------------ | ---------------------------- |
+| `operation`     | "all matches" \| "test match" \| "replace" \| "groups" | Operation                    |
+| `searchString`  | string                                                 | Input string                 |
+| `regexPattern`  | string                                                 | Regex pattern                |
+| `regexFlags`    | string (optional)                                      | Regex flags                  |
+| `replaceString` | string (optional)                                      | Replacement text for replace |
 
 Example input:
 
