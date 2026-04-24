@@ -29,5 +29,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add scripts/**/*.osts
-          git diff --cached --quiet || git commit -m "chore: regenerate .osts files"
+          git diff --cached --quiet || git commit -m "chore(scripts): regenerate .osts files"
           git push
